@@ -1,3 +1,22 @@
+ECS Deployment Architecture (Daisy-Optimizer)
+================================================
+when we want to deploy our application on ecs containers, initially we need to create the clusters and task definition and services manually later on we can automate the deployment.
+- source code is kept in github
+- we have used Code build to build our project where we have configured a buildspec file 
+- the buildspec file contains the instructions to install the dependencies like docker runtime , build the project in the build phase, in the post build phase we create the docker image and store it in ecr repository.
+- Also in post build stage we create the jar file of our project and pull the apppspec.yaml file from github and zip all the contenets in the one file.
+- we create the imagedefinition.json file which will contain the image tag stored in the ecr and the container name to be created in the ecs.
+- this is needed to update the task definition evverytime we build the new code and deploy our application in ecs.
+- later we store the artifacts in s3 these artifacts are nothing but the zip file that contains the jar file of our project the appspec.yaml file and imagedefinition.json file.
+
+
+- Then we select code deploy to deploy our application on ecs containers using blue green deoployment type, this hepls us 
+
+
+
+
+
+
 1. Explain the architecture of Amazon ECS and describe its main components?
 
 Amazon ECS is a container orchestration service that allows you to run applications in Docker containers. Its main components include:
