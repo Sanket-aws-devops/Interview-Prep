@@ -1,20 +1,63 @@
 ECS Deployment Architecture (Daisy-Optimizer)
 ================================================
-when we want to deploy our application on ecs containers, initially we need to create the clusters and task definition and services manually later on we can automate the deployment.
-- source code is kept in github
-- we have used Code build to build our project where we have configured a buildspec file 
-- the buildspec file contains the instructions to install the dependencies like docker runtime , build the project in the build phase, in the post build phase we create the docker image and store it in ecr repository.
-- Also in post build stage we create the jar file of our project and pull the apppspec.yaml file from github and zip all the contenets in the one file.
-- we create the imagedefinition.json file which will contain the image tag stored in the ecr and the container name to be created in the ecs.
-- this is needed to update the task definition evverytime we build the new code and deploy our application in ecs.
-- later we store the artifacts in s3 these artifacts are nothing but the zip file that contains the jar file of our project the appspec.yaml file and imagedefinition.json file.
+CI/CD Deployment Process for ECS Fargate Containers
+-------------------------------------------------------
+
+1. Source Code Management:
+========================
+ -   The source code is stored in GitHub.
+
+2. Build Phase: (Buildspecfile.yaml)
+=====================================
+  -   We utilize AWS CodeBuild to build our project. This includes configuring a buildspec.yml file that contains:
+      Install Phase:
+      ---------------
+        - Instructions to install necessary dependencies, including the Docker runtime.
+    
+      Build Phase:
+      -------------
+        - Commands to build the project.
+    
+      Post-Build Phase:
+      -----------------
+        - Creation of a Docker image, which is then pushed to an Amazon ECR (Elastic Container Registry) repository.
+        - Generation of a JAR file from our project.
+        - Retrieval of an appspec.yaml file from GitHub.
+        - Zipping all contents (JAR file, appspec.yaml, and imagedefinition.json) into one artifact.
+
+      Image Definition:
+      -----------------
+        - An imagedefinition.json file is created during the post-build phase. This file specifies:
+        - The image tag stored in ECR.
+        - The container name to be used in the ECS task definition.
+
+3. Artifact Storage:
+======================
+ -   The zipped artifact is stored in Amazon S3, ensuring that it is readily accessible for deployment.
+
+4. CodeDeploy Configuration: (appspec.yaml)
+============================================
+-    We configure AWS CodeDeploy to deploy our application on ECS containers using a blue/green deployment strategy. 
+-    This approach allows for easy rollback to a previous version if any issues arise during the deployment process.
+-    In CodeDeploy, we select:
+       - The ECS cluster.
+       - The task definitions and services that were manually created in ECS.
+
+5. Automation with CodePipeline:
+=================================
+    - To streamline the entire process, we automate it using AWS CodePipeline, which orchestrates the flow from code commit to deployment.
+
+6. Task Definition and Service Creation:
+==========================================
+    - In ECS, we create a task definition that specifies container details such as:
+        - Container name.
+        - Image URL with tag.
+        - Container port and other necessary configurations.
+Subsequently, we create a service within the ECS cluster using this task definition, specifying networking, load balancing, and scaling options for our container.
+- 
 
 
-- Then we select code deploy to deploy our application on ecs containers using blue green deoployment type, this hepls us 
-
-
-
-
+=================================================================INTERVIEW QUESTIONS================================================================================================
 
 
 1. Explain the architecture of Amazon ECS and describe its main components?
