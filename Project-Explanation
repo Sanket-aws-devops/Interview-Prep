@@ -1,0 +1,51 @@
+Wyseplus
+==========
+
+This project was already started when i joined the company 
+I used to assist a Senior Devops guy who had 2 years of experience at that time.
+He created all the infra in aws 
+Since it was a Internal Project we didnt had very advanced architecture configured.
+Initially we used to assist him in manual deployments and understanding the infrastructure that he had set up 
+later on we started monitoring the infrastructure and the application using monitoring tools like cloudwatch 
+later on we changed the monitoring tool from cloudwatch to Prometheus and Grafana 
+Later on we deployed this project in Docker containers 
+since it was a internal project we were trying multiple technologies 
+
+
+
+TDMS
+======
+
+Its a client Project 
+our client is PROLEC.GE 
+we had 3 environments dev,qa,prod
+when we deploy our code in dev we used to pull it from dev branch, deploy it and test it 
+once it is verified then we used to pull from qa branch and deploy it on qa env
+Later we used to have a demo call every alternate friday evening with our client,
+we used to show him all the changes that we have done and deployed on qa 
+if he approves then we used to do the production deployment on saturday Morning.
+
+There requirement was like they wanted everything in specifically AWS cloud
+secondly they wanted to deploy the application on EC2 instances using ECS.
+They wanted us to automate the deployment using only aws tools like Code build, code deploy nad code pipeline.
+so we created the same architecture for QA and Production Environment.
+our application backend was built in java frontend was react and database used was Mysql
+we had 2 EC2 instances running for API we had t3.4xlarge and for ui we had t3.xlarge
+Database was created in rds with m1.xlarge instance 
+our code was in Bitbucket
+so we used build our project convert it into a docker image using Dockerfile which used to be in our Project repository
+Docker image used to get stored in the private ECR repository in AWS
+Later on we created the ECS cluster and task definition
+Task definitions used to include all the details like Ec2 details instance types, container name and iamge url and container port.
+Later on we created service where we configured load balancing, autoscaling, vpc.
+
+so now whenever the commit happens in the repository the webhook gets triggered and it trigger the code pipeline to pull the code and start the build and deploy it on ecs EC2 instances
+pipeline starts with code build 
+The buildspecfile.yaml file in the code build builds the project convert it to docker image and stores the docker image in ECR repo.
+It then takes the jar file, appspec.yaml file and taskdefinition.json file and zip them and stores them as an artifact in the s3.
+once the image is pushed in the ecr code deploy gets triggered 
+code deploy uses the imagedefinition.json file which specifies the new image to be deployed along with its corresponding container name and repository URI
+This file is created during the build process and stored as an artifact in S3.
+code pipeline then moves for the deployment where it interacts with ECS cluster and use this imagedefinitions.json file to update the ecs service.
+The ECS service will replace the existing task-set with the new one and initialize the new BG deployment.
+once the newly deployed containers are healthy the ALB will route the traffic to those containers.
