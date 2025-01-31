@@ -1,0 +1,2 @@
+Deploying an application on ec2 instances with load balancer, and configuring the autoscaling group to scale in and sclae out the instances depending upon the load .
+=====================================================================================================================================================================
