@@ -1,2 +1,57 @@
 Deploying an application on ec2 instances with load balancer, and configuring the autoscaling group to scale in and sclae out the instances depending upon the load .
 =====================================================================================================================================================================
+- Create an Ec2 instance install all the dependencies and run the project in it 
+- take an AMI of that ec2 instance 
+
+Create a load balancer and target group
+========================================
+  - create the target group selet the port onto which your application is running
+  - Attach this instance in the target group 
+  - register this instance and make sure it is healthy 
+  - create the internet facing application load balancer
+  - select the http port as 80
+  - attach the target group to the lb 
+  - the listner rules says that if the traffic comes to lb listner port 80 it willbe routed to target group port
+Test the application using load balancer dns if it works terminate the ec2 instance and use the ami in the autoscaling configuration
+
+steps while creating Autoscaling Group and launch Template
+==========================================================
+  - create launch template 
+  - select your ami,instance type, ebs volume, securirty group.
+  - click on create
+  - create autoscaling group
+  - select your launch template
+  - choose vpc and availability and subnets,
+  - select balanced best effort instead of balanced only
+(Balanced Best Effort: If launches fail in one Availability Zone, Auto Scaling will attempt to launch in another healthy Availability Zone.)
+(Balanced Only: If launches fail in one Availability Zone, Auto Scaling will continue to attempt to launch in the unhealthy Availability Zone to preserve balanced distribution.)
+  - configure load balancing by selecting your existing load balancer.
+  - configure ec2 health checks
+  - Configure scaling policy
+  - Specify the desired, minimum nad maximum count of the instances that you want 
+  - Select the target tracking scaling policy.
+        - specify the scaling policy name 
+        - select the Metric types (cpu utilization, application load balancer reqest count per target, custom cloudwatch metric, Avg network In, Avg network Out)
+        - select CPU utilization.
+  - specify the target value as 50
+  - choose the replacement behaviour as Launch Before Terminating.
+(Launch new instances and wait for them to be ready before terminating others. This allows you to go above your desired capacity by a given percentage and may temporarily increase costs.)
+- click on create ASG
+  - You can see the instance coming up in ec2 dashboard.
+
+
+Create the cloudwatch alarm and metric to trigger the autoscaling group to bring up another ec2 instance 
+=========================================================================================================
+  - click on create alarm in cloudwatch
+  - click on select metric 
+  - choose per instance metric
+  - Find the instance ID for your running EC2 instance and select the CPUUtilization metric for that instance.
+  - configure the alarm by setting the threshold type as Static.
+  - Choose Greater/Equal for the condition and set threshold value as 50
+  - Set the Period to 5 minutes (or your desired period) to track the metric for a 5-minute window.
+  - Choose 1 out of 1 datapoints to trigger the alarm (this means the alarm will trigger if the CPU utilization exceeds 50% for 1 period of 5 minutes).
+  - configure SNS topic to send email notification on your email if the laod exceeds 50% and it triggers an "ALARM"
+Once the configuration is done you can run below command 
+stress --cpu 2 --timeout 300
+it increases the cpu usage of your ec2 instance for 5 minutes
+
