@@ -1,0 +1,39 @@
+TDMS current project
+======================
+
+Project was deployed on ECS ec2 instance rather than ec2 instances 
+why to choose ecs ec2 instances over general ec2 instances 
+  - if we choose ECS EC2 instances then our application is deployed on containers which is completely managed by the ecs cluster 
+  - ecs basically creates the cluster where we have deployed all our resoiurces like the api ui.
+  - database was deployed on rds as it is fully managed AWS service and aws takes care of complete security, patching scaling, and failover
+  - enabled Multi-AZ deployments in RDS, which ensures high availability and automatic failover in case of instance failure, reducing the risk of downtime.
+  
+
+okay i have been working on the TDMS project since 1.5 year 
+where the client wanted the complete deployemnt architecture to be configured using only aws services.
+so it was a java application and we used gradle as build tool for building.
+we implemented cicd deployment using code build and code deploy 
+we deployed our application on ecs cluster on containers in ec2 instances.
+
+"I managed GitHub repositories, integrating them with CI/CD pipelines to streamline our development process. 
+This included handling branching strategies and conducting code reviews to maintain code quality."
+maintaing 3 branches qa dev and prod
+
+all the infrastructure was created in custom vpc with both public and private subnets inetrnet gateways and nat gateways
+database was created in rds instance for high availability and performance optimization.
+regular automated backup startegy was implemented on database.
+
+alb was setup as a part of ecs cluster for traffic distribution across EC2 instances, enhancing application responsiveness and reliability.
+target tracking scaling policy was configured in ecs 
+
+used code build code deploy and code pipeline as CICD to automate and deploy the application on ecs cluster 
+wrote jenkins file which had the instructions for building the project, creating the dockerfile and pushing the docker image into ecr repository.
+wrote dockerfile for building the project and running the jar file 
+
+created prometheus and grafana servers which was used for monitoring and gathering application logs 
+loga used to gets stored in the s3 
+created s3 bucket life cycle policy and configured the rule for deleting the old logs 
+configured the days as 7 days which means the last 7 days logs will automatically gets deleted.
+
+
+
