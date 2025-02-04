@@ -256,6 +256,35 @@ scaling policies in ecs?
       - target tracking and step scaling 
     - the scaling can be done in service by updating services
 
-=======================================================================EKS=======================================================================================================
+=======================================================================CODE BUILD,CODE DEPLOY AND CODE PIPELINE=======================================================================================================
 
+What types of applications can be deployed using AWS CodeDeploy?
+    -Traditional applications
+    -serverless applications
+    --web applications
+ what is a buildspec.yaml file
+    -A buildspec file in AWS CodeBuild is a configuration file that defines the build commands and settings that CodeBuild uses to execute a build.
+    -phasses of buildspec.yaml file
+        -phases: Contains commands for different stages of the build:
+              -install: Commands to install dependencies.
+              -pre_build: Commands to run before the actual build starts.
+              -build: The main commands that compile or package the application.
+              -post_build: Commands to run after the build is complete, such as cleaning up or preparing artifacts.
+              -artifacts: Specifies which files should be collected and stored after the build completes.
 
+How can you integrate AWS CodePipeline with GitHub?
+    -we configure webhook in the github repository 
+    -In code pipelien we select the create pipeline option and select github as the source provider
+    -select the repository and code piepline will automatically configure the webhook
+
+How do you manage permissions for AWS CodePipeline and its associated services?
+What IAM roles and policies are necessary?
+    -When you create a pipeline, AWS CodePipeline automatically generates a service role (e.g., AWSCodePipelineServiceRole). 
+    -This role allows CodePipeline to interact with other AWS services (like CodeBuild, CodeDeploy, etc.) on your behalf.
+    -You can customize this role to follow the principle of least privilege by granting only the necessary permissions for the specific actions your pipeline needs.
+    -Assign IAM users or groups the necessary permissions to interact with CodePipeline. 
+    -This includes permissions to start executions, view pipeline details, and perform approval actions.
+
+Can you explain how to set up a pipeline that includes automated tests using AWS CodeBuild?
+What tools can be integrated for testing?
+    -
