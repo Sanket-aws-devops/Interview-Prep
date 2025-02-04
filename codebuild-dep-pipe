@@ -1,0 +1,22 @@
+Advanced Level Questions
+Describe a scenario where you would use blue/green deployment with AWS CodeDeploy.
+What are the benefits of this deployment strategy?
+How would you implement a multi-account setup for CI/CD using AWS CodePipeline?
+Discuss the challenges and solutions.
+In what scenarios would you prefer using AWS Step Functions over AWS CodePipeline?
+Compare their use cases.
+Explain how to cache build artifacts in AWS CodeBuild to improve performance.
+What configurations are needed?
+Discuss how you would implement monitoring and logging for an AWS CodePipeline workflow.
+Which services would you use for this purpose?
+Scenario-Based Questions
+Scenario: You have a microservices architecture deployed on ECS using AWS CodePipeline. A new feature requires changes in multiple services simultaneously. How would you manage this deployment?
+Discuss your approach to coordinating deployments across services.
+Scenario: Your team has identified a performance bottleneck during the build phase of your pipeline using AWS CodeBuild. What steps would you take to optimize the build process?
+Consider aspects like instance types, caching, and parallel builds.
+Scenario: A recent deployment via AWS CodeDeploy caused downtime due to a bug in the application code. How would you implement safeguards to prevent this in future deployments?
+Discuss strategies like canary releases or automated rollbacks.
+Scenario: You need to deploy an application that requires database migrations as part of the deployment process using AWS CodePipeline and CodeDeploy. How would you handle this requirement?
+Explain your approach to managing database changes safely.
+Scenario: Your organization is transitioning from a monolithic application to microservices hosted on AWS Lambda, managed by CodePipeline. What considerations should be taken into account during this transition?
+Discuss architectural changes, testing strategies, and deployment methodologies.
