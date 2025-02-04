@@ -1,6 +1,8 @@
 Interview questions on s3 
 ===========================
 
+====================================================================SIMPLE STORAGE SERVICE [S3]========================================================================================
+
 storage classes in s3 
   -Standard: Default, general-purpose storage for frequently accessed data.
   -Intelligent-Tiering: Automatically moves data between two access tiers (frequent and infrequent) based on access patterns.
@@ -45,3 +47,215 @@ Scenario: You need to archive old logs in S3 but want to ensure they are automat
   -Transition objects to Glacier after 30 days.
   -Delete the objects after 3 years.
   -This helps with cost optimization while ensuring compliance with data retention policies.
+
+
+===============================================================LOAD BALANCING====================================================================================
+
+
+what is sticky session and how do you implement it in ALB
+    -Sticky sessions are a mechanism that ensures a user's requests are always sent to the same backend server during a session.
+    -Go to the EC2 Console.
+    -Select Target Groups under Load Balancing.
+    -Choose the target group for which you want to enable sticky sessions.
+    -Click on the Attributes tab and select Edit.
+    -Enable stickiness and set the duration (in seconds) for how long the session should stick to a target
+
+
+You have a load balancer running and behind it 5 web servers. 
+Users complain that every time they move to a new page, they have to authenticate, instead of doing it once. How can you solve it?
+
+    -Enable sticky sessions. 
+    -This way, the user keep working against the same instance, instead of being redirected to a different instance every request.
+
+what is cross zone load baalncing and how do you implement it?
+    -cross zone load baalncing means distributing the traffic to the instances in different availability zones.
+    -EX: you have one EC2 instance in us-east-1a and another in us-east-1b (two different Availability Zones), and both instances are registered in the target group of an AWS Load Balancer,
+    the load balancer will be able to distribute traffic to both instances, assuming cross-zone load balancing is enabled.
+    -If cross-zone load balancing is disabled, the load balancer will only send traffic to instances in the same availability zone where the request was received.
+    -For example, if a request comes to the load balancer from us-east-1a, it will only be routed to instances in us-east-1a. 
+    -If a request comes from us-east-1b, it will be routed to instances in us-east-1b.
+
+
+Is it possible to assign a static IP address to an ELB ? if yes how?
+    -It is possible to assign static IP to only Network Load Balancer and not to ALB & ELB.
+    -You can use different tols like aws workaround to assign a static ip for ALB or you can put an NLB before your ALB load balancer and assign a static ip for that NLB.
+    -But it is not necessarily needed to assign a static ip for load balancer as it has a stable DNS which can be used to map domain names.
+
+
+How do you secure access to ALB?
+    -Enable SSL/TLS encryption to secure data in transit.
+    -Configure Security Groups to control inbound traffic.
+    -Use AWS WAF to protect against web vulnerabilities.
+    -Set up IAM policies to control who can manage the ALB.
+    -Make the ALB internal if you don't need public access.
+    -Enable access logging to monitor traffic.
+    -Use AWS Shield for enhanced protection against DDoS attacks.
+
+How does TLS termination work in AWS Load Balancers, and what benefits does it provide?
+    -TLS Termination means that the load balancer handles the decryption of encrypted traffic (HTTPS) instead of the backend servers.
+    -How it works:
+      -Client sends HTTPS traffic (encrypted) to the load balancer.
+      -The load balancer decrypts the traffic.
+      -The load balancer then forwards the decrypted traffic (HTTP) to the backend servers.
+      -If needed, the response from the backend can be re-encrypted before being sent back to the client.
+
+
+Scenario: Your application experiences sudden spikes in traffic. Describe how you wobalancer and Auto Scaling group to handle this situation effectively.
+    -we would configure a load balancer with cross region az enabled so that the traffic is distributed accross all the instances in multi AZ.
+    -create an ASG with target tracking scaling policy based on cloudwatch metrics like cpu utilization
+    -configure the desired count, min and max count.
+    
+Scenario: You need to deploy a new version of your application with minimal disruption to users. How can you use AWS Load Balancers to achieve this ?
+    -Blue/Green Deployment:
+    Deploy the new version (Green) alongside the current version (Blue).
+    Initially route traffic to the Blue environment. Once the Green environment is fully deployed and tested, switch traffic to it by updating the target group in the ALB or NLB.
+
+    -Canary Deployment:
+    Gradually shift traffic from the old version (Blue) to the new version (Green) by configuring weighted target groups in the load balancer. 
+    Start with a small percentage of traffic (e.g., 10%) and increase it as the new version proves stable.
+
+
+==========================================================================Autoscaling=======================================================================================
+
+What is AWS Auto Scaling? How does it work?
+    -AWS Auto Scaling is a service that automatically adjusts the number of Amazon EC2 instances in an Auto Scaling group based on defined policies. 
+    -It helps ensure that the application has the right amount of resources at any given time, 
+    -scaling out (adding instances) during high demand and scaling in (removing instances) during low demand.
+
+What are the types of scaling policies in AWS Auto Scaling?
+    -There are primarily two types of scaling policies:
+    -Target Tracking Scaling: This policy adjusts the capacity to maintain a specific metric at a target value (e.g., CPU utilization).
+    -Step Scaling: This policy scales the capacity based on specified adjustments for different ranges of metric values, allowing for more granular control.
+
+Explain the significance of cooldown periods in Auto Scaling.
+    -Cooldown periods prevent Auto Scaling from launching or terminating additional instances before the previous ones have fully started or stopped.
+    -This ensures that the system stabilizes after scaling actions, preventing unnecessary scaling actions due to transient spikes or drops in demand.
+
+How does AWS Auto Scaling handle instances that fail health checks?
+    -When an instance fails a health check, AWS Auto Scaling automatically terminates the unhealthy instance and launches a new one to replace it. 
+    -This process helps maintain the desired capacity and ensures that only healthy instances serve traffic.
+
+Your organization wants to minimize costs while using AWS for disaster recovery. What architecture would you recommend?
+    -I would recommend a pilot light strategy for disaster recovery. This involves maintaining a minimal version of an environment (pilot light) in another region with essential components like databases and configurations. 
+    -During a disaster, we can quickly scale up additional resources (like EC2 instances) as needed to restore full functionality while keeping costs low during normal operations.
+
+Your application requires secure storage of sensitive customer data with auditing capabilities. How would you implement this using AWS services?
+    -I would use:
+    -Amazon S3 with Server-Side Encryption (SSE) for secure storage of sensitive data.
+    -AWS Identity and Access Management (IAM) roles and policies to enforce strict access controls.
+    -AWS CloudTrail for logging API calls and monitoring access attempts, ensuring compliance with auditing requirements.
+    -AWS Key Management Service (KMS) for managing encryption keys securely.
+    -This setup provides a robust solution for secure data storage while maintaining compliance with auditing standards
+
+=============================================================================RDS=================================================================================================
+
+
+What do you know about RDS backups?
+    -Automated backups
+    -Full daily backup (done during maintenance window)
+    -Transactions logs backup every 5 minutes
+    -Retention can be increased and by default it's 7 days
+
+Explain Amazon RDS Read Replicas
+    Read replicas in Amazon RDS (Relational Database Service) are copies of your primary database instance used to offload read traffic.
+    this replicas are created from your primary database and used by the dev team to perform read operations so that the load from primary database gets decreased and it could only be used for writing.
+
+how does automated backup work in RDS?
+    -When you enable automated backups in RDS, daily snapshots of your database are taken. In addition, transaction logs are continuously recorded and stored.
+    -when you create the database in rds you specify the backup window,  the backup usually last 30 mins
+    -RDS usally takes snapshots of your database every day and stores them in s3
+    -set the retention period from 1-35 days 
+
+what is point in time recovery?
+    -Point-in-Time Recovery (PITR) in Amazon RDS allows you to restore a database to a specific moment in time, down to the exact second, within the retention period of your automated backups.
+    -When you enable automated backups in RDS, daily snapshots of your database are taken. In addition, transaction logs are continuously recorded and stored.
+
+Explain RDS Multi Availability Zone
+    -RDS multi AZ used mainly for disaster recovery purposes
+    -There is an RDS master instance and in another AZ an RDS standby instance
+    -The data is synced synchronously between them
+    -The user, application is accessing one DNS name and where there is a failure with the master instance, the DNS name moves to the standby instance, so the failover done automatically
+
+How AWS RDS switches from single AZ to multi AZ?
+    -Snapshot is taken by RDS
+    -The snapshot is restored to another, standby, RDS instance
+    -Synchronization is enabled between the two instances
+
+How to make RDS snapshots encrypted?
+    -If RDS database is encrypted then, the snapshot itself is also encrypted
+    -If RDS database isn't encrypted then, the snapshot itself isn't encrypted and then you can copy the un-encrypted snapshot to created an encrypted copy
+    
+How IAM authentication works with RDS? / Secure way to connect to rds database other than username or passwords ?
+    -Enable IAM Authentication on RDS:
+      -Ensure that IAM authentication is enabled on your RDS instance (MySQL, PostgreSQL, etc.) during the database setup.
+    -Grant IAM Permissions:
+      -Create IAM roles and policies that allow users or applications to connect to the database and restrict or allow certain operations to perform.
+    -Obtain a token:
+      -When a user or application attempts to connect to the RDS database, they call the AWS API to generate an authentication token (temporary token).
+    -Connect to the RDS Instance:
+      -The user or application then connects to the RDS database using the generated token.
+      -RDS verifies the token with IAM to ensure it's valid, and the user is authorized.
+
+How can you restore a database from a snapshot in Amazon RDS? 
+    -You can restore a database from a snapshot / we can use Point-in-time Option.
+
+Can you encrypt an existing unencrypted Amazon RDS instance? 
+    -No, Directly we cannot enforce encryption on Existing RDS instance but, by taking a snapshot, creating a copy with encryption, and then promoting the copy.
+=======================================================================IAM=========================================================================================================
+
+What are the different types of IAM policies?
+    -There are two main types of IAM policies:
+    -Managed Policies: These are standalone policies that you can attach to multiple users, groups, or roles. 
+                       They can be AWS managed (created and managed by AWS) or customer managed (created and managed by you).
+    -Inline Policies: These are policies that are embedded directly into a user, group, or role. 
+                      They are created and managed directly on the user, group, or role itself.
+
+How do you secure your AWS account with IAM?
+    -To secure an AWS account with IAM, you should:
+    -Implement strong password policies and require multi-factor authentication (MFA).
+    -Regularly review and audit user permissions to ensure they align with the principle of least privilege.
+    -Avoid sharing long-term access keys and instead use IAM roles for temporary access.
+    -Enable CloudTrail to monitor and log all API activities.
+    -Use IAM policies and resource-based policies to control access to AWS resources.
+
+
+==========================================================================FARGATE====================================================================================================
+
+What is AWS Fargate?
+    -AWS Fargate is a serverless compute engine for containers. 
+    -It allows you to run containers without managing servers or clusters.
+    -we need to provide the Docker images and Fargate handles the underlying scaling infrastructure networking.
+
+FArgate VS Ec2
+    -In EC2 the management is completely done by the user like scaling, networking security, selecting operating system, patching,
+    -Fargate is serverless so it eleiminates the complexities of patching nad maintining the infrastructure and you only pay for the compute time used by the containers.
+
+Explain the difference between Fargate tasks and ECS tasks.
+    - ECS tasks can run on EC2 instances but Fargate tasks does not need any instances they can run on fargate compute engine.
+
+What is an Task Definition?
+    -Task definition is the blueprint that describes how the container should be launched on Fargate like which image it should use, which port it should run on, how much cpu should be alloted, network config, env variable config
+
+What is Service?
+    - Service in ECS ensures that all your tasks are up and running and they maintain the desired value.
+    - It automatically handles task scaling, replacements, and failure recovery. For example, if one task fails, ECS will launch a new one to keep your service running.
+
+What is CLusters in ECS?
+    -It is collection of various tasks and services.
+
+What is TASK EXECUTION ROLE ? / how does ecs communicate with Other AWS Services?
+    -ECS uses task execution role taht is used for pulling container images from ECR repository or accessing other AWS resources  on behalf on running tasks.
+
+Is it possible to ssh into ECS Container? if yes How?
+    -yes it is possible using ecs exec we need to enable this feature in task definition and then it opens a interactive shell inside your container so that you can access the conatiner.
+    - you dont need to ssh into the containers it willgive you the direct access.
+    -it uses aws session manager to establish the secure connection to the container.
+
+scaling policies in ecs?
+    -there are two scaling policies in ecs 
+      - target tracking and step scaling 
+    - the scaling can be done in service by updating services
+
+=======================================================================EKS=======================================================================================================
+
+
