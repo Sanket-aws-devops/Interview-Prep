@@ -63,9 +63,9 @@ what is sticky session and how do you implement it in ALB
 
 You have a load balancer running and behind it 5 web servers. 
 Users complain that every time they move to a new page, they have to authenticate, instead of doing it once. How can you solve it?
-
     -Enable sticky sessions. 
     -This way, the user keep working against the same instance, instead of being redirected to a different instance every request.
+
 
 what is cross zone load baalncing and how do you implement it?
     -cross zone load baalncing means distributing the traffic to the instances in different availability zones.
@@ -114,6 +114,17 @@ Scenario: You need to deploy a new version of your application with minimal disr
     Gradually shift traffic from the old version (Blue) to the new version (Green) by configuring weighted target groups in the load balancer. 
     Start with a small percentage of traffic (e.g., 10%) and increase it as the new version proves stable.
 
+
+- Algorithms in Load Balancing
+  Round Robin: it is the simplest algorithm which distributes the incoming requests in the rotating order
+EX: we have 3 servers and multiple users are questing then user1 request will be directed to server1, user2 to server2, user3 to server3, user4 to server1
+
+  Weighted Round Robin: This is an advanced version of round robin that distributes requests based on the weighted score of the servers.
+EX: more user requests will be directed to the more powerful servers and miniumal requsts will be directed to less powerful servers.
+
+  Least Response time: This dynamic algorithm assigns incoming requests to the server with the lowest response time
+EX: The load balancer continuously monitors the response times of each server2. 
+When a new request arrives, the load balancer assigns it to the server with the lowest average response time
 
 ==========================================================================Autoscaling=======================================================================================
 
