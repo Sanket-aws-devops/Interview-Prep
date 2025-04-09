@@ -69,8 +69,8 @@ Users complain that every time they move to a new page, they have to authenticat
 
 what is cross zone load baalncing and how do you implement it?
     -cross zone load baalncing means distributing the traffic to the instances in different availability zones.
-    -EX: you have one EC2 instance in us-east-1a and another in us-east-1b (two different Availability Zones), and both instances are registered in the target group of an AWS Load Balancer,
-    the load balancer will be able to distribute traffic to both instances, assuming cross-zone load balancing is enabled.
+    -EX: you have one EC2 instance in us-east-1a and another in us-east-1b (two different Availability Zones), and both instances are registered in the target group of an AWS lb,
+     the lb will be able to distribute traffic to both instances, assuming cross-zone load balancing is enabled.
     -If cross-zone load balancing is disabled, the load balancer will only send traffic to instances in the same availability zone where the request was received.
     -For example, if a request comes to the load balancer from us-east-1a, it will only be routed to instances in us-east-1a. 
     -If a request comes from us-east-1b, it will be routed to instances in us-east-1b.
@@ -100,7 +100,7 @@ How does TLS termination work in AWS Load Balancers, and what benefits does it p
       -If needed, the response from the backend can be re-encrypted before being sent back to the client.
 
 
-Scenario: Your application experiences sudden spikes in traffic. Describe how you wobalancer and Auto Scaling group to handle this situation effectively.
+Scenario: Your application experiences sudden spikes in traffic. Describe how you loadbalancer and Auto Scaling group to handle this situation effectively.
     -we would configure a load balancer with cross region az enabled so that the traffic is distributed accross all the instances in multi AZ.
     -create an ASG with target tracking scaling policy based on cloudwatch metrics like cpu utilization
     -configure the desired count, min and max count.
