@@ -1,0 +1,421 @@
+ROUND1
+=======
+
+Github:
+========
+explain the branching strategy?
+> we have 3 branches develop for dev env, main for qa env, and prod for production env
+> we first deploy the code from develop branch into dev environment, once tested and approved then it is merged into main branch and deployed in QA env, later it is tested and verified and once it is approved it gets merged into prod branch and gets deployed in production env
+
+how do you resolve conflicts?
+> at first we execute git status command to check the conflicted file 
+> then we use git diff command to understand the conflicts
+> later we could open the file make remove the conflicts and do git add and commit the file again using git commit
+> or we could do git rebase 
+
+explain about branch protection rules ? how do you configure it ?
+> GitHub branch protection rules to secure critical branches like main or release. These rules enforce workflows such as requiring pull request reviews, restricting force pushes or deletions.
+> To configure them, I go to repository settings, add a branch protection rule for specific branches or patterns, and enable options like requiring status checks or limiting push access.
+
+What is git rebase ?
+> git rebase command is used to integrate changes from one branch to another, it moves the commit from one branch and applies them on top of the target branch.
+
+why we should not do git revert?
+
+
+Load Balancers
+===============
+what is ALB ?why do we use it ?
+---------------------------------
+> ALB stands for Application Load Balancer, it can be used when we need to access the application using path based routing.
+> it can inspect with HTTP/HTTPS headers, paths and hostnames, it is mostly used for HTTP/HTTPS traffic 
+
+
+ALB vs NLB ?
+-------------
+> ALB stands for application load balancer it supports path based routing it operates on osi layer 7 (Application layer) and it is best for HTTP/HTTPS traffic
+> NLB stands for Network Load balancer it does not supports path based routing, it routes traffic based on ip address and port numbers, it is used for TCP/UDP traffic where you need high performance and low latency.
+
+
+How do you configure ALB ?
+>
+
+
+what are the routing algorithm in AWS load balancer?
+------------------------------------------------------
+> Round Robin: it is the simplest algorithm which distributes the incoming requests in the rotating order
+EX: we have 3 servers and multiple users are questing then user1 request will be directed to server1, user2 to server2, user3 to server3, user4 to server1
+
+> Weighted Round Robin: This is an advanced version of round robin that distributes requests based on the weighted score of the servers.
+EX: more user requests will be directed to the more powerful servers and miniumal requsts will be directed to less powerful servers.
+
+> Least Response time: This dynamic algorithm assigns incoming requests to the server with the lowest response time
+EX: The load balancer continuously monitors the response times of each server2. 
+When a new request arrives, the load balancer assigns it to the server with the lowest average response time
+
+
+Routing policies in ALB
+>
+
+
+What is sticky session 
+-----------------------
+> Sticky sessions are a mechanism that ensures a user's requests are always sent to the same backend server during a session.
+Go to the EC2 Console.
+Select Target Groups under Load Balancing.
+Choose the target group for which you want to enable sticky sessions.
+Click on the Attributes tab and select Edit.
+Enable stickiness and set the duration (in seconds) for how long the session should stick to a target
+
+
+what is tcp/udp traffic ?
+--------------------------
+> TCP stands for Transmission control protocol is connection oriented protocol which ensures that the data is deliverd accurately in correct order .
+ex: downloading a file from the browser.
+> UDP stands for User datagram protocol is fast and connectionless protocol which is used in online gaming or live streaming 
+> HTTP: used for transferring unencrypted data over the web
+> HTTPS: secure version of http that encrypts the data using TLS/SSL 
+EX: accessing secure website like https://abc.com 
+
+
+Route53
+========
+what is hosted zone in route53 ?
+> A hosted zone in Amazon Route 53 is a container that holds information about how you want to route traffic for a specific domain and its subdomains
+> two types of hosted zones public and private
+
+what is geolocation routing?
+> 
+how can we manage subdomains independently using Route53 ?
+
+
+
+
+RDS
+===
+How do you maintain high availability in your rds ? / if i have a rds instance running in us-east-1a and and for some reason the us-east-1a zones gets crashed or gets down then how will you troubleshoot it ?
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> i will configure multi AZ deployment while launching the rds instance so it will create two rds instances in two different AZ if one goes down AWS automatically makess the other one as primary .
+
+
+How can you reduce the load from your rds instance?
+-----------------------------------------------------
+> we can configure read replicas which will be used by the developrs for read operations and reducing the load on the primary rds instance.
+
+
+What do you know about RDS backups?
+-----------------------------------
+> Automated backups
+> Full daily backup (done during maintenance window)
+> Transactions logs backup every 5 minutes
+> Retention can be increased and by default it's 7 days
+
+
+
+what is point in time recovery?
+--------------------------------
+> Point-in-Time Recovery (PITR) in Amazon RDS allows you to restore a database to a specific moment in time, down to the exact second, within the retention period of your automated backups.
+> When you enable automated backups in RDS, daily snapshots of your database are taken. In addition, transaction logs are continuously recorded and stored.
+
+
+
+
+Explain RDS Multi Availability Zone / How does you manage failover in RDS 
+--------------------------------------------------------------------------
+> RDS multi AZ used mainly for disaster recovery purposes
+> There is an RDS master instance and in another AZ an RDS standby instance
+> The data is synced synchronously between them
+> The user, application is accessing one DNS name and where there is a failure with the master instance, the DNS name moves to the standby instance, so the failover done automatically
+
+
+How IAM authentication works with RDS? / Secure way to connect to rds database other than username or passwords ?
+> Enable IAM Authentication on RDS:
+    Ensure that IAM authentication is enabled on your RDS instance (MySQL, PostgreSQL, etc.) during the database setup.
+> Grant IAM Permissions:
+    Create IAM roles and policies that allow users or applications to connect to the database and restrict or allow certain operations to perform.
+> Obtain a token:
+   When a user or application attempts to connect to the RDS database, they call the AWS API to generate an authentication token (temporary token).
+> Connect to the RDS Instance:
+   The user or application then connects to the RDS database using the generated token.
+   RDS verifies the token with IAM to ensure it's valid, and the user is authorized.
+
+
+What tools or services do you use for backup management in AWS?
+------------------------------------------------------------------
+> we have database deployed in rds also we have configured automated backups that take snapshots every 7 days and it gets stored in s3
+> In our QA and development environments, where we have databases running on EC2 instances within an EKS cluster, 
+> we take Amazon Machine Images (AMIs) of those instances every 7 days.
+
+
+
+VPC
+===
+what is subnet what are the types of subnets ?
+Create the complete deployment architecture for a 3 tier application wrt vpc,sub etc.
+What is the difference between nat gateway and nat instances? which is more preferable? which one have you used?
+
+
+
+CI/CD
+=====
+Explain the complete process of CI/CD you configured wrt code build, code deploy and code pipeline .
+Explain about BG deploymnet type ?
+Difference between BG-DEP and Canary deployment?
+How do you route traffic once the deployment is succesful ?
+
+
+Docker
+=====
+write a dockerfile for a java application?
+network types in docker 
+
+How do you manage versioning of Docker images stored in ECR?
+-------------------------------------------------------------
+> when pushing the image to ecr we use a consistent tagging process where the image is tagged with specific version like 1.0
+> tagging helps us when we need to rollback to the previous version  
+> we implemented ecr life cycle policies where the older images gets deleted after a certain period
+
+
+Kubernetes
+==========
+Explain the kubernetes architecture / Explain all the components of kubernetes.
+----------------------------------------------------------------------------------
+> kubernetes follow master slave architecture where we have one master node and multiple worker nodes 
+> master nodes schedule pods on the worker nodes using the component called kube schedular 
+> the master node is managed ny he key components like 
+    > kube api server that acts as a entrypoint for all the cluster operations.
+    > etcd works as a database for the cluster.
+    > kube controller manager ensures the desired state of cluster like replicas
+> the worker node are the nodes where your application gets deployed and runs
+> the worker node is amanged by the components like 
+    > kubelet ensures that the containers in the pods are running correctly
+    > kubeproxy handles networking to ensure communication between the pods and services.
+
+
+How do you take backups in Kubernetes ?
+----------------------------------------
+> we use a tool named valero
+
+
+How do you rollback the deployments in kuberntes? mention the command ?
+-------------------------------------------------------------------------
+> we use the "kubectl rollout undo <deployment-kind>/<deployment-name> command to revert back to the previous stable deployment.
+> i have a api-deployment.yaml file which is used for taking the api-image:2 from ecr and deploying on eks cluster.
+now i have pushed another version of image in ecr api-image:3 and deployed this image in eks using api-deployment.yaml 
+but for some reason the pod is crashing and the deployment is failing assuming there is some issue with the code in the api-image:3
+so in that case if i execute the "kubectl rollout undo deployments/api-deployments", Kubernetes will look at the deployment history and revert the deployment to its previous stable state, which was using the api-image:2. 
+It will automatically pull this image and redeploy the pods with the working version of your API.
+kubernetes will terminate all the pods that are running with api-image:3 and schedule new pods with api-image:2 
+
+
+what is the difference between kube controller and kube schedular ?
+-------------------------------------------------------------------
+> kube controller
+    > controller makes sure taht the cluster current state matches the desired state by continously monitoring the resources.
+    > example:  if a Deployment specifies 5 replicas but only 3 pods are running, the controller will create 2 more pods
+    > If a pod crashes or is deleted unexpectedly, the controller detects this and recreates the pod to match the desired state.
+> Kube schedular:
+    > Assigns newly created pods to suitable nodes based on resource availability,
+    > Finds the best node for the pod based on factors like CPU, memory, affinity rules, and topology constraint.
+ 
+
+expplain the workflow of networking and traffic routing in k8s.
+> 
+How can we upgrade our EKS cluster ? How can you achieve zero downtime while upgrding your EKS cluster?
+What is rolling upgrade startegy?
+
+if i have two pods in different namespace will they communicate with each other if yes how ?
+> yes they can communicate, as kubernetes uses built in DNS resolution method to enable the cross namespace communication.
+> ex: pod1 is running in namespace1 so you create the service for pod1 with name "pod1-service"
+
+what are the networking plugin in kubernetes? what plugin have you used ?
+how will you connnect to kubernetes cluster in eks from your local or from aws cli?
+
+
+
+How do you handle scaling in your EKS cluster? Are there any auto-scaling mechanisms in place?
+----------------------------------------------------------------------------------------------
+> we have used hpa and vpa inorder to scale our pods 
+> in api we have used hpa as it may experience varying traffic, and scaling horizontally (means adding more pods) helps distribute the load effectively across multiple instances.
+> in db we have not used hpa because the database is deployed as stateful set and scaling number of db instances may increase sharding or replication complexity so inorder to avoid that we use vpa.
+> VPA can help by increasing memory and CPU requests for each database pod to ensure optimal performance.
+
+how will you configure autoscaling in kubernetes? how will hoa gets trigger to scale the pod?
+write a deployment.yaml and hpa.yaml file ?
+
+what is statefulsets? / benifit of deploying an application using statefulsets?
+----------------------
+> StatefulSets are used for stateful applications like databases where you don't want to lose data. They ensure:
+Persistent Storage: Data remains even if pods restart or terminate, thanks to Persistent Volume Claims (PVCs).
+Stable Network Identity: Each pod has a consistent hostname, which helps in communication between pods, this hostname will not change even if the pod restarts
+In stateful sets each pod gets its own PVC via Volume claim Templates.
+
+
+
+
+What is daemon-set? when do we use it ?
+> it is a kubernetes object that ensures a specific pod runs on all nodes in the cluster .
+> if you want to collect logs from every node in your cluster, you can use a DaemonSet to deploy a logging agent pod (e.g., Fluentd).
+
+What is taints and tolerations? How do you configure it ?
+
+Why cant we schedule any pods on master node?
+> because master node is tainted.
+
+What is Ingress Controller?
+> it is a kubernetes object taht enables HTTP/HTTPS traffic to reach the cluster
+> it works like a load balancer
+
+Ingress Controller vs Load balancer ?
+
+When do we use ingress controller and how do you configure it ?
+> create teh deployment and service.yaml fiel and configure service type as clusterIp
+> install ingress controller and lb using the kubectl apply command
+> create a ingress.yaml file 
+
+
+What is the difference between taints and toleration and node affinity?
+> 
+
+How do you configure node affinity ?
+
+what is loop crash back error?
+> CrashLoopBackOff is a Kubernetes error that occurs when a pod repeatedly crashes and fails to start successfully. 
+> Kubernetes tries to restart the pod, but if the issue persists, it enters a "CrashLoopBackOff" state.
+> It is caused by configuration errors like incorrect port numbers, misconfigured env variables, insufficient CPU or memory allocated to pod, error in application code. 
+> to identify execute the below commands
+    > kubectl describe pod <namespace>
+
+
+what does it mean if your pod is in pending state ? how will you troubleshoot it?
+> A pod in the Pending state means it has been accepted by the Kubernetes system but cannot be scheduled onto a node or started
+> some possible causes are insufficient resources (CPU, memory) in the cluster.
+> not able to pull the container image
+> pvc volume is not available.
+
+How many master nodes and worker nodes you can create is it possible to have two master nodes and one worker node?
+yes it is possible 
+
+how do you connect to kubernetes cluster from your local or from cloudshell ? 
+> we can connect to eks cluster using the kubeconfig file 
+> if we copy the kubeconfig file in our local then we need to encrypt it using the chmod 600 
+
+
+
+
+
+MAVEN & GRADLE
+==============
+what is teh difference between maven and gradle tools?
+> maven is used for simpler projects  it uses XML for configurations, (pom.xml)
+> gardle is used for large multi module or highly customized projets, it uses groovy or KOTLIN DSL for configuration. (build.gradle)
+
+what is the dependency section in maven and gradle used for ?
+> Yes, both Maven and Gradle have a dependency section, and its purpose is crucial for managing external libraries and packages required by a project.
+
+what is the pom.xml file used for in maven ?
+>
+
+
+SSL/TLS 
+=======
+What is ssl/tls mean ?
+> secure socket layer and transport layer security are two cryptographic protocols that secure communication over the internet.
+> They ensure that the data transmitted between the web browser and the server remains private and cannot be intercepted.
+> TLS is more modern version of ssl 
+ex: so when you access a website which is ssl protected your data like passwords gets encrypted and stays protected.
+
+ 
+how do you create a ssl certificate ?
+--------------------------------------
+> I use AWS Certificate Manager (ACM) to create SSL/TLS certificates for securing websites and applications. 
+> I request a public certificate and specify the domain name(s). 
+> For validation, I prefer DNS validation, where ACM provides a CNAME record that I add to my domain's DNS settings. 
+> Once validated, ACM issues the certificate automatically, which I then attach to services like ALB.
+> This process ensures secure communication and simplifies certificate management with automatic renewals."
+
+how it is secured?
+> using public and private key crytographic encryption.
+
+
+
+MOnitoring
+===========
+what is prometheus ?
+> prometheus is a tool that can be used for collecting the metrics usingg the node exporter agent and stores them and send them to graffana for visulaization. 
+
+how do you configure prometheus ?
+> we instal prometheus using sudo apt-get install prometheus command where we get the prometheus.yaml file 
+> in prometheus.yaml file we configure the target machine ip, job name and scrape interval.
+
+how do you configure metrics in prometheus ?
+
+any query that will be used to monitor the servers?
+http_requests_total{status="500"}
+
+what is grafana?
+>
+what all metrics do we need to monitor for a server?
+> cpu utilization, memory usage,
+
+prometeus and garfana working
+> we install a node exporter agent in the target machines which runs on port 9100
+> we configure the targets ip and scrape intervals in the node exporter config file 
+> node exporter exposes the metrics collected from the target machines
+> later we have a dedicated ec2 for prometheus seerver where in the prometheus.yaml file
+> IN prrometheus.yaml file we create the job name scrape intervals and the target machine from where we need to collect the logs with node exporter port number.
+ 
+
+
+
+Project1 TDMS
+==============
+We have the source code kept in github 
+we have configured webhooks in github so that whenever the commit happens it triggers the code build job to push the latest changes and build the project.
+In code build we are building the project using the buildspec.yaml file in which we are pulling the latest changes from the repository and building the project creating the jar file and adding the jar file into teh artifacts and storing the artifacts in s3 bucket.
+The code deploy is has an appspec.yaml and .sh file for deploying the application on ec2 instance.
+In code deploy we mention the path of our s3 bucket where we store teh artifacts and in the appspec.yaml file we simply mention the file name also we mention the .sh file in the Application start Hooks which has the instruction or commands to run the application on the ec2 instance .
+To automate this process we use code pipleine .
+the application has a load balancer dns which is mapped with the domain name and hosted in route53.
+
+
+
+
+
+BlueGreen Deployment
+=====================
+
+
+
+
+===============================================================================================================================
+
+R2
+
+
+
+
+===============================================================================================================================
+
+
+🔹Tell me about yourself?
+ 🔹 What kind of clients and projects did you work on?
+ 🔹 What is the team size you worked with?
+ 🔹 What were your roles and responsibilities?
+ 🔹 Explain your branching strategy.
+ 🔹 Git rebase vs. merge
+ 🔹 What is Terraform taint?
+ 🔹 Describe your pipeline.
+ 🔹 Describe a DevOps pipeline using YAML.
+ 🔹 Describe a desktop project that produces an artifact.
+ 🔹 What is your experience with ARM templates and Terraform?
+ 🔹 How would you approach migrating 500+ on-premises systems to AWS or Azure?
+ 🔹 (Follow-up) How would you approach the same specifically for Azure?
+ 🔹 How do you approach client requests to reduce costs?
+ 🔹 How does AI/ML relate to your cloud/DevOps experience?
+ 🔹 What are the specific considerations for a multi-cloud environment?
+ 🔹 Can you describe a scenario where you optimized a DevOps pipeline for a complex application, and what strategies did you use?
+ 🔹 How would you reduce downtime during monthly patching activity?
+ 🔹 Explain the importance of close monitoring, and what types of monitoring do you use?
+ 🔹 Describe a security incident you faced.
+ 🔹 What compliance standards are you familiar with?
