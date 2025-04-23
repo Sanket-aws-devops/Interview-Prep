@@ -222,15 +222,28 @@ what is the difference between kube controller and kube schedular ?
 expplain the workflow of networking and traffic routing in k8s.
 > 
 How can we upgrade our EKS cluster ? How can you achieve zero downtime while upgrding your EKS cluster?
+>
 What is rolling upgrade startegy?
 
-if i have two pods in different namespace will they communicate with each other if yes how ?
+If i have two pods in different namespace will they communicate with each other if yes how ?
+----------------------------------------------------------------------------------------------
 > yes they can communicate, as kubernetes uses built in DNS resolution method to enable the cross namespace communication.
 > ex: pod1 is running in namespace1 so you create the service for pod1 with name "pod1-service"
 
-what are the networking plugin in kubernetes? what plugin have you used ?
-how will you connnect to kubernetes cluster in eks from your local or from aws cli?
 
+what are the networking plugin in kubernetes? what plugin have you used ?
+---------------------------------------------------------------------------
+> Networking Plugins are needed in kubernets for pod communication.
+> There are may networking plugins available such as Calico, Flannel, Weave-net, cilium
+> i have used calico networking plugin as it provides us robust network policies and scalable routing.
+> Calico is better because it gives you strong security controls, faster networking, and better tools for large or critical Kubernetes clusters.
+For example, if you need to restrict which services can talk to each other (like in banking or healthcare), Calico makes this easy and safe
+> Suppose you have a Kubernetes cluster running a payment service and a user service.
+With Calico: You can easily create a rule that only allows the payment service to talk to the user service, blocking all other connections for security.
+
+
+how will you connnect to kubernetes cluster in eks from your local or from aws cli?
+-------------------------------------------------------------------------------------
 
 
 How do you handle scaling in your EKS cluster? Are there any auto-scaling mechanisms in place?
@@ -244,7 +257,7 @@ how will you configure autoscaling in kubernetes? how will hoa gets trigger to s
 write a deployment.yaml and hpa.yaml file ?
 
 what is statefulsets? / benifit of deploying an application using statefulsets?
-----------------------
+----------------------------------------------------------------------------------
 > StatefulSets are used for stateful applications like databases where you don't want to lose data. They ensure:
 Persistent Storage: Data remains even if pods restart or terminate, thanks to Persistent Volume Claims (PVCs).
 Stable Network Identity: Each pod has a consistent hostname, which helps in communication between pods, this hostname will not change even if the pod restarts
@@ -269,6 +282,7 @@ What is Ingress Controller?
 Ingress Controller vs Load balancer ?
 
 When do we use ingress controller and how do you configure it ?
+---------------------------------------------------------------
 > create teh deployment and service.yaml fiel and configure service type as clusterIp
 > install ingress controller and lb using the kubectl apply command
 > create a ingress.yaml file 
@@ -280,6 +294,7 @@ What is the difference between taints and toleration and node affinity?
 How do you configure node affinity ?
 
 what is loop crash back error?
+-----------------------------------
 > CrashLoopBackOff is a Kubernetes error that occurs when a pod repeatedly crashes and fails to start successfully. 
 > Kubernetes tries to restart the pod, but if the issue persists, it enters a "CrashLoopBackOff" state.
 > It is caused by configuration errors like incorrect port numbers, misconfigured env variables, insufficient CPU or memory allocated to pod, error in application code. 
@@ -288,6 +303,7 @@ what is loop crash back error?
 
 
 what does it mean if your pod is in pending state ? how will you troubleshoot it?
+------------------------------------------------------------------------------------
 > A pod in the Pending state means it has been accepted by the Kubernetes system but cannot be scheduled onto a node or started
 > some possible causes are insufficient resources (CPU, memory) in the cluster.
 > not able to pull the container image
@@ -313,7 +329,7 @@ Any changes to the pod template needs recreating the replica set.
 Handles rolling updates, rollbacks and scaling.
 when you update the deployment it automatically creates a new replicaset and transition pods with zero downtime.
 
-Explain about the POrt Forwarding concept in kubernetes 
+Explain about the Port Forwarding concept in kubernetes 
 --------------------------------------------------------
 > Port forwarding is used when you need to access the application running in your kubernetes cluster from your local machine without exposing those application tpo public internet.
 EX: i have an application running in cluster on port 80 exposed using service type as ClusterIP, so it is not accessible outsude the cluster but i want to access that application from my local machine 
@@ -321,7 +337,112 @@ so i need a kubeconfig file in my local and i need to connect to my cluster
 once you are connected to the cluster run the below command ....
 kubectl get pods 
 kubectl port-forward pod/mypod 8080:80
-By executing the above command you can open the browser and visit localhost:8080 to interact with webserver running inside your cluster even though 
+By executing the above command you can open the browser and visit localhost:8080 to interact with webserver running inside your cluster even though you exposed your service using clusterIP.
+
+
+How does port forwarding work ? what happens in the background after you execute the port forwarding command.
+------------------------------------------------------------------------------------------------------------------
+> When you execute the kubectl port-forward pod/mypod 8080:80 command 
+1. kubectl conect to kubeAPI Server using your kubeconfig file.
+2. API server setup a secure tunnel between your local machine and target pod.
+3. Any request you send to localhost:8080 on your local machine browser is securely sent through this tunnel to port 80 on the pod inside the cluster.
+4. Pod process this request and sends the response back thriugh the same tunnel to your local machine.
+
+
+Why port forwarding and not LB/NP?
+------------------------------------------------
+Port forwarding is a temporary access without exposing your application to outside world.
+
+
+What is Kubernetes probes ?
+-----------------------------
+Kubernetes probes are health checks that kubernetes uses to monitor the status of application running inside the container.
+Types of Probes:
+-----------------
+Liveness: checks if your application is still running , if it fails it restarts the container.
+Readiness: checks if your application is ready to accept the traffic, if it fails then k8s will stop sending the traffic to that pod until it passes the probe.
+Startup: checks if your appliation has started correctly, useful for apps that take long time to start after this one starts.
+
+
+How Kubernetes Probe works?
+----------------------------
+kubernetes can check in several ways :
+1. sending HTTP request to specific endpoint.
+2. trying to open a TCP connection.
+3. Running a command inside the container
+
+
+What is the difference between Volume and Persistent Volume(PV) and Persistent Volume Claim(PVC)
+-------------------------------------------------------------------------------------------------
+Volume: it is directly accessible to containers in pod, used for storing data.
+It is defined at pod level.
+Volume gets deleted once pod gets deleted.
+
+Persistent Volume; It is a piece of storage in cluster managed by the kubernetes or admin that exist even if teh pod ends.
+Deleting a pod does not delete the PV or its data.
+
+Persistent Volume Claim: it is how user or pod request storage 
+it specifies what kind of storage is needed.
+kubernetes finds a suitable PV to match the PVC and bind them together 
+Pod then uses PVC to access the storage.
+
+
+Explain the complete process of creating and assigning the PV and PVC to the pod.
+------------------------------------------------------------------------------------
+1. first create the persistent volume which will be the storage resource 
+-----------------------------------------------------------------------------
+vi pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: pv-volume
+spec:
+    capacity: 
+        storage: 1Gi
+    accessModes:
+        - ReadWriteOnce
+    hostpath:
+        path: /data
+
+Here we create a PV with 1Gi storage in the cluster 
+
+2. Create the Persistent Volume claim which will be the storage request
+-------------------------------------------------------------------------
+vi pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: pvc-volume
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 1Gi
+
+This PVC asks for 1Gi storage with the read write access 
+
+3. Pod uses PVC as Volume
+--------------------------
+vi pod.yaml
+apiVersion: v1
+kind: pod
+metadata:
+    name: mypod
+spec:
+    containers:
+        - name: conatainer1
+          image: mydbimage
+          volumeMounts:
+            - MountPath: "/var/lib/data"
+              name: Myvolume
+    volumes:
+        - name: myvolume
+          persistentVolumeClaim:
+            claimname: Pvc-volume
+
+The pod mounts the pvc as volume at /var/lib/data so even if the pod gets deleted the stays in the PV and can be reused again by another pod. 
+
 
 
 MAVEN & GRADLE
