@@ -187,7 +187,7 @@ Explain the kubernetes architecture / Explain all the components of kubernetes.
     > etcd works as a database for the cluster.
     > kube controller manager ensures the desired state of cluster like replicas
 > the worker node are the nodes where your application gets deployed and runs
-> the worker node is amanged by the components like 
+> the worker node is managed by the components like 
     > kubelet ensures that the containers in the pods are running correctly
     > kubeproxy handles networking to ensure communication between the pods and services.
 
@@ -297,11 +297,31 @@ How many master nodes and worker nodes you can create is it possible to have two
 yes it is possible 
 
 how do you connect to kubernetes cluster from your local or from cloudshell ? 
+---------------------------------------------------------------------------------
 > we can connect to eks cluster using the kubeconfig file 
 > if we copy the kubeconfig file in our local then we need to encrypt it using the chmod 600 
 
 
+what is the difference between deployment and replicaset ?
+-----------------------------------------------------------------
+> Replicaset: ensures that the desired number of pods(replicas) are always running.
+if a pod fails or is deleted the replica set automatically creates another one to maintain the desired count.
+But it does not support rolling update or rollbacks.
+Any changes to the pod template needs recreating the replica set.
 
+> Deployment: manages replicaset and provide advanced features for application lifecycle management.
+Handles rolling updates, rollbacks and scaling.
+when you update the deployment it automatically creates a new replicaset and transition pods with zero downtime.
+
+Explain about the POrt Forwarding concept in kubernetes 
+--------------------------------------------------------
+> Port forwarding is used when you need to access the application running in your kubernetes cluster from your local machine without exposing those application tpo public internet.
+EX: i have an application running in cluster on port 80 exposed using service type as ClusterIP, so it is not accessible outsude the cluster but i want to access that application from my local machine 
+so i need a kubeconfig file in my local and i need to connect to my cluster 
+once you are connected to the cluster run the below command ....
+kubectl get pods 
+kubectl port-forward pod/mypod 8080:80
+By executing the above command you can open the browser and visit localhost:8080 to interact with webserver running inside your cluster even though 
 
 
 MAVEN & GRADLE
