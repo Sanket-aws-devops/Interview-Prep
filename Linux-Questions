@@ -34,3 +34,80 @@ Ans: /root
 Ans: netstat -tuln | grep :port_number
  lsof -i :port_number
  nmap -p port_number localhost
+
+6 Linux commands:
+Ans:commands related to file management
+---------------------------------------------
+> ls : list the files 
+> ls -l : list files with details
+> chown : change file ownership 
+    chown newuser file.txt
+> chmod: change file permissions
+    chmod 755 script.sh
+> pwd: shows present working directory
+
+commands related to monitoring and system information:
+-------------------------------------------------------
+> netstat -tulnp : list current ports
+> ping : check network conectivity
+> top: display running process and system usage 
+> free: show memory usage
+> df -h: show disk usage in human readable format
+
+commands related to user and permission managemnt 
+--------------------------------------------------
+> useradd: adds a user 
+    sudo useradd -m <username>
+> userdel: delete the user 
+    sudo userdel 
+
+commands related to networking
+-------------------------------
+> curl 
+> wget
+> nslookup
+
+Process management
+-------------------
+> kill
+> pkill -9 <process-id>
+> jobs : list the background job
+> ps : show running process
+    ps aux | grep nginx
+
+logging and monitoring
+-------------------------
+> journalctl: view system logs  
+    journalctl -u apache: shows apache2 logs
+> tail: view end of the file in real time 
+    tail -f /var/log/apache2/access.log
+> last: show last loggedin user
+> history: show command history
+
+commands for everyday scenario
+-------------------------------
+
+> fdisk:
+> htop:
+> ls | grep <filename>
+> ps aux: shows all the process
+> ps ux: shows the process owned by the current user
+> rsync: copies and synchronize the file by compressing the data using -a,-v,-p flags 
+    rsync -avz /photos/ user@backup-server:/media/backup/
+> nslookup:  requests a domain name system (DNS) server to check a domain linked to an IP address or vice versa.
+    nslookup google.com
+> export: it is used to set env variables 
+    export MY_VAR="HelloWorld"
+
+
+
+Packagae managers
+-------------------
+
+apt: apt is a debian based package manager
+manually update the repo 
+dnf: dnf is a rpm based package manager.
+automatically update the repo.
+
+
+
