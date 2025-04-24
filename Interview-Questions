@@ -1,8 +1,7 @@
-ROUND1
-=======
 
-Github:
-========
+                                                                                        ===================
+==============================================================================================GITHUB============================================================================================================================
+                                                                                        ===================
 explain the branching strategy?
 > we have 3 branches develop for dev env, main for qa env, and prod for production env
 > we first deploy the code from develop branch into dev environment, once tested and approved then it is merged into main branch and deployed in QA env, later it is tested and verified and once it is approved it gets merged into prod branch and gets deployed in production env
@@ -23,8 +22,11 @@ What is git rebase ?
 why we should not do git revert?
 
 
-Load Balancers
-===============
+
+                                                                                        ===================
+==========================================================================================LOAD BALANCERS=======================================================================================================================
+                                                                                        ==================
+
 what is ALB ?why do we use it ?
 ---------------------------------
 > ALB stands for Application Load Balancer, it can be used when we need to access the application using path based routing.
@@ -58,6 +60,22 @@ Routing policies in ALB
 >
 
 
+
+what happens in the backend when you hit the url in the browser ?explain the complete scenario 
+-------------------------------------------------------------------------------------------------
+> when you type the url, browser splits it into parts eg: https://example.com/products
+protocol: https
+Domain: exampple.com
+path: /products
+> the browser needs the ip address of example.com to know where to send the request so it checks its cache, if not found it asks DNS to translate teh example.com into IP address.
+> the browser uses IP address to connect to the webserver.
+> for https it establishes secure connection using ssl/tls
+> later the browser sends an HTTP request to the server, the request asks server for the /products page.
+> The server receives the request runs the code and fetches the data and sends the respnse in HTML.
+
+
+
+
 What is sticky session 
 -----------------------
 > Sticky sessions are a mechanism that ensures a user's requests are always sent to the same backend server during a session.
@@ -78,8 +96,10 @@ ex: downloading a file from the browser.
 EX: accessing secure website like https://abc.com 
 
 
-Route53
-========
+                                                                                            ===================
+================================================================================================ROUTE53========================================================================================================================
+                                                                                            ===================
+
 what is hosted zone in route53 ?
 > A hosted zone in Amazon Route 53 is a container that holds information about how you want to route traffic for a specific domain and its subdomains
 > two types of hosted zones public and private
@@ -90,9 +110,10 @@ how can we manage subdomains independently using Route53 ?
 
 
 
+                                                                                            ======================================
+==============================================================================================RELATIONAL DATABASE SERVICE (RDS)================================================================================================
+                                                                                            =======================================
 
-RDS
-===
 How do you maintain high availability in your rds ? / if i have a rds instance running in us-east-1a and and for some reason the us-east-1a zones gets crashed or gets down then how will you troubleshoot it ?
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 > i will configure multi AZ deployment while launching the rds instance so it will create two rds instances in two different AZ if one goes down AWS automatically makess the other one as primary .
@@ -147,27 +168,86 @@ What tools or services do you use for backup management in AWS?
 > we take Amazon Machine Images (AMIs) of those instances every 7 days.
 
 
+                                                                                                ====================================
+====================================================================================================VIRTUAL PRIVATE CLOUD (VPC)=================================================================================================
+                                                                                                ===================================
 
-VPC
-===
 what is subnet what are the types of subnets ?
+> subnet is nothing but distributing your network in small sub networks.
+> Two types of subnet private and public
+
 Create the complete deployment architecture for a 3 tier application wrt vpc,sub etc.
-What is the difference between nat gateway and nat instances? which is more preferable? which one have you used?
 
+3. What is the difference between nat gateway and nat instances? which is more preferable? which one have you used?
+--------------------------------------------------------------------------------------------------------------------
+> NAT Gateway is a fully managed AWS service that lets private subnets access the internet. It’s highly available, scales automatically, and AWS handles all maintenance. You just set it up and forget it
+> NAT Instance is an EC2 instance that you configure to do the same job. It’s cheaper, but you have to manage everything yourself—updates, scaling, failover, and security.
+> I have used NAT Gateway in my projects because it’s simple to set up, requires no maintenance, and is highly available.
 
+Steps to create the nat instances
+---------------------------------
+> select the nat ami from AWS marketplace 
+> launch the ec2 from that ami
+> launch this ec2 in public subnet 
+> connect to it and enable IP forwarding
+> disable the source and destination check from teh networking section.
+> update the private subnet route tables to point to nat instance.
 
-CI/CD
-=====
+                                                                                                ========================================
+===================================================================================================CI/CD (CODE BUILD/DEPLOY/PIPELINE)===========================================================================================
+                                                                                                =========================================
+
 Explain the complete process of CI/CD you configured wrt code build, code deploy and code pipeline .
 Explain about BG deploymnet type ?
 Difference between BG-DEP and Canary deployment?
 How do you route traffic once the deployment is succesful ?
+Describe your CI/CD pipeline.
+
+                                                                                                    ===========
+======================================================================================================DOCKER====================================================================================================================
+                                                                                                    ===========
+
+1. write a dockerfile for a java application?
+--------------------------------------------
+FROM maven3.2-java8
+WORKDIR /app
+COPY . .
+RUN mvn clean install
+EXPOSE 8080
+CMD["java","-jar","server.jar"]
 
 
-Docker
-=====
-write a dockerfile for a java application?
-network types in docker 
+2. Network types in docker 
+--------------------------
+> There are 4 network types in Docker 
+Host:
+Bridge:
+Overlay:
+MacVLAN
+
+What is the difference between EXPOSE in a Dockerfile and docker run -p?
+---------------------------------------------------------------------------
+> EXPOSE is used to open the port inside teh container so that the application could run on it.
+> -p (publish) it is used so that the application can be accessible from outside the container.
+
+
+What is a Dockerfile? Write a basic Dockerfile for a Node.js application.
+----------------------------------------------------------------------------
+> A Dockerfile is a text file containing a set of instructions used to build a Docker image for your application. 
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "app.js"]
+
+
+What is a base image in Docker? Which base image would you use for Python or Node.js?
+--------------------------------------------------------------------------------------
+> A base image in Docker is the foundational layer of a Docker image from which you build your custom images. 
+> It typically contains the minimal operating system and runtime environment needed to run your application
+> for python we use python:3.9 and for node we can use node:18
 
 How do you manage versioning of Docker images stored in ECR?
 -------------------------------------------------------------
@@ -175,10 +255,18 @@ How do you manage versioning of Docker images stored in ECR?
 > tagging helps us when we need to rollback to the previous version  
 > we implemented ecr life cycle policies where the older images gets deleted after a certain period
 
+                                                                                                ======================        
+=======================================================================================================Kubernetes===============================================================================================================
+                                                                                                =======================
 
-Kubernetes
-==========
-Explain the kubernetes architecture / Explain all the components of kubernetes.
+1. What is a Pod in Kubernetes? Create a pod.yaml for a single-container pod running nginx
+-----------------------------------------------------------------------------------------
+>
+
+
+
+
+2. Explain the kubernetes architecture / Explain all the components of kubernetes.
 ----------------------------------------------------------------------------------
 > kubernetes follow master slave architecture where we have one master node and multiple worker nodes 
 > master nodes schedule pods on the worker nodes using the component called kube schedular 
@@ -192,12 +280,12 @@ Explain the kubernetes architecture / Explain all the components of kubernetes.
     > kubeproxy handles networking to ensure communication between the pods and services.
 
 
-How do you take backups in Kubernetes ?
+3. How do you take backups in Kubernetes ?
 ----------------------------------------
 > we use a tool named valero
 
 
-How do you rollback the deployments in kuberntes? mention the command ?
+4. How do you rollback the deployments in kuberntes? mention the command ?
 -------------------------------------------------------------------------
 > we use the "kubectl rollout undo <deployment-kind>/<deployment-name> command to revert back to the previous stable deployment.
 > i have a api-deployment.yaml file which is used for taking the api-image:2 from ecr and deploying on eks cluster.
@@ -208,7 +296,7 @@ It will automatically pull this image and redeploy the pods with the working ver
 kubernetes will terminate all the pods that are running with api-image:3 and schedule new pods with api-image:2 
 
 
-what is the difference between kube controller and kube schedular ?
+5. what is the difference between kube controller and kube schedular ?
 -------------------------------------------------------------------
 > kube controller
     > controller makes sure taht the cluster current state matches the desired state by continously monitoring the resources.
@@ -219,19 +307,28 @@ what is the difference between kube controller and kube schedular ?
     > Finds the best node for the pod based on factors like CPU, memory, affinity rules, and topology constraint.
  
 
-expplain the workflow of networking and traffic routing in k8s.
-> 
-How can we upgrade our EKS cluster ? How can you achieve zero downtime while upgrding your EKS cluster?
->
-What is rolling upgrade startegy?
+6. expplain the workflow of networking and traffic routing in k8s.
+-----------------------------------------------------------------------
+> when we deploy our application in kubernetes by configuring CNI plugins like calico, weaver, flannel
+> so when the pod gets deployed, kubernetes assigns it a unique IP, this allows the pod to talk to another pod within the same cluster.
+> Kubernetes uses a Service as a stable way to access a group of pods. A Service gets its own cluster IP and routes traffic to healthy pods behind it 
+> To let traffic from outside the cluster reach your app (for example, from the internet), you use a Service of type NodePort or LoadBalancer
 
-If i have two pods in different namespace will they communicate with each other if yes how ?
+7. How can we upgrade our EKS cluster ? How can you achieve zero downtime while upgrding your EKS cluster?
+-----------------------------------------------------------------------------------------------------------
+> 
+
+8. What is rolling upgrade startegy?
+---------------------------------------
+>
+
+9. If i have two pods in different namespace will they communicate with each other if yes how ?
 ----------------------------------------------------------------------------------------------
 > yes they can communicate, as kubernetes uses built in DNS resolution method to enable the cross namespace communication.
 > ex: pod1 is running in namespace1 so you create the service for pod1 with name "pod1-service"
 
 
-what are the networking plugin in kubernetes? what plugin have you used ?
+10. what are the networking plugin in kubernetes? what plugin have you used ?
 ---------------------------------------------------------------------------
 > Networking Plugins are needed in kubernets for pod communication.
 > There are may networking plugins available such as Calico, Flannel, Weave-net, cilium
@@ -242,21 +339,26 @@ For example, if you need to restrict which services can talk to each other (like
 With Calico: You can easily create a rule that only allows the payment service to talk to the user service, blocking all other connections for security.
 
 
-how will you connnect to kubernetes cluster in eks from your local or from aws cli?
+11. How will you connnect to kubernetes cluster in eks from your local or from aws cli?
 -------------------------------------------------------------------------------------
+>
 
-
-How do you handle scaling in your EKS cluster? Are there any auto-scaling mechanisms in place?
+12. How do you handle scaling in your EKS cluster? Are there any auto-scaling mechanisms in place?
 ----------------------------------------------------------------------------------------------
 > we have used hpa and vpa inorder to scale our pods 
 > in api we have used hpa as it may experience varying traffic, and scaling horizontally (means adding more pods) helps distribute the load effectively across multiple instances.
 > in db we have not used hpa because the database is deployed as stateful set and scaling number of db instances may increase sharding or replication complexity so inorder to avoid that we use vpa.
 > VPA can help by increasing memory and CPU requests for each database pod to ensure optimal performance.
 
-how will you configure autoscaling in kubernetes? how will hoa gets trigger to scale the pod?
-write a deployment.yaml and hpa.yaml file ?
+13. How will you configure autoscaling in kubernetes? how will hpa gets trigger to scale the pod?
+---------------------------------------------------------------------------------------------------
+>
 
-what is statefulsets? / benifit of deploying an application using statefulsets?
+14. write a deployment.yaml and hpa.yaml file ?
+-----------------------------------------------------
+>
+
+15. what is statefulsets? / benifit of deploying an application using statefulsets?
 ----------------------------------------------------------------------------------
 > StatefulSets are used for stateful applications like databases where you don't want to lose data. They ensure:
 Persistent Storage: Data remains even if pods restart or terminate, thanks to Persistent Volume Claims (PVCs).
@@ -266,34 +368,43 @@ In stateful sets each pod gets its own PVC via Volume claim Templates.
 
 
 
-What is daemon-set? when do we use it ?
+16. What is daemon-set? when do we use it ?
+-----------------------------------------------
 > it is a kubernetes object that ensures a specific pod runs on all nodes in the cluster .
 > if you want to collect logs from every node in your cluster, you can use a DaemonSet to deploy a logging agent pod (e.g., Fluentd).
 
-What is taints and tolerations? How do you configure it ?
+17. What is taints and tolerations? How do you configure it ?
+----------------------------------------------------------------
 
-Why cant we schedule any pods on master node?
+18. Why cant we schedule any pods on master node?
+-----------------------------------------------------
 > because master node is tainted.
 
-What is Ingress Controller?
-> it is a kubernetes object taht enables HTTP/HTTPS traffic to reach the cluster
+19. What is Ingress Controller?
+-----------------------------------
+> it is a kubernetes object that enables HTTP/HTTPS traffic to reach the cluster
 > it works like a load balancer
 
-Ingress Controller vs Load balancer ?
+20. Ingress Controller vs Load balancer ?
+--------------------------------------------
+>
 
-When do we use ingress controller and how do you configure it ?
+21. When do we use ingress controller and how do you configure it ?
 ---------------------------------------------------------------
-> create teh deployment and service.yaml fiel and configure service type as clusterIp
+> create the deployment and service.yaml fiel and configure service type as clusterIp
 > install ingress controller and lb using the kubectl apply command
 > create a ingress.yaml file 
 
 
-What is the difference between taints and toleration and node affinity?
+22. What is the difference between taints and toleration and node affinity?
+----------------------------------------------------------------------------
 > 
 
-How do you configure node affinity ?
+23. How do you configure node affinity ?
+-----------------------------------------
+>
 
-what is loop crash back error?
+24. what is loop crash back error?
 -----------------------------------
 > CrashLoopBackOff is a Kubernetes error that occurs when a pod repeatedly crashes and fails to start successfully. 
 > Kubernetes tries to restart the pod, but if the issue persists, it enters a "CrashLoopBackOff" state.
@@ -302,23 +413,23 @@ what is loop crash back error?
     > kubectl describe pod <namespace>
 
 
-what does it mean if your pod is in pending state ? how will you troubleshoot it?
+25. what does it mean if your pod is in pending state ? how will you troubleshoot it?
 ------------------------------------------------------------------------------------
 > A pod in the Pending state means it has been accepted by the Kubernetes system but cannot be scheduled onto a node or started
 > some possible causes are insufficient resources (CPU, memory) in the cluster.
 > not able to pull the container image
 > pvc volume is not available.
 
-How many master nodes and worker nodes you can create is it possible to have two master nodes and one worker node?
+26. How many master nodes and worker nodes you can create is it possible to have two master nodes and one worker node?
 yes it is possible 
 
-how do you connect to kubernetes cluster from your local or from cloudshell ? 
+27. how do you connect to kubernetes cluster from your local or from cloudshell ? 
 ---------------------------------------------------------------------------------
 > we can connect to eks cluster using the kubeconfig file 
 > if we copy the kubeconfig file in our local then we need to encrypt it using the chmod 600 
 
 
-what is the difference between deployment and replicaset ?
+28. what is the difference between deployment and replicaset ?
 -----------------------------------------------------------------
 > Replicaset: ensures that the desired number of pods(replicas) are always running.
 if a pod fails or is deleted the replica set automatically creates another one to maintain the desired count.
@@ -329,7 +440,7 @@ Any changes to the pod template needs recreating the replica set.
 Handles rolling updates, rollbacks and scaling.
 when you update the deployment it automatically creates a new replicaset and transition pods with zero downtime.
 
-Explain about the Port Forwarding concept in kubernetes 
+29. Explain about the Port Forwarding concept in kubernetes 
 --------------------------------------------------------
 > Port forwarding is used when you need to access the application running in your kubernetes cluster from your local machine without exposing those application tpo public internet.
 EX: i have an application running in cluster on port 80 exposed using service type as ClusterIP, so it is not accessible outsude the cluster but i want to access that application from my local machine 
@@ -340,7 +451,7 @@ kubectl port-forward pod/mypod 8080:80
 By executing the above command you can open the browser and visit localhost:8080 to interact with webserver running inside your cluster even though you exposed your service using clusterIP.
 
 
-How does port forwarding work ? what happens in the background after you execute the port forwarding command.
+30. How does port forwarding work ? what happens in the background after you execute the port forwarding command.
 ------------------------------------------------------------------------------------------------------------------
 > When you execute the kubectl port-forward pod/mypod 8080:80 command 
 1. kubectl conect to kubeAPI Server using your kubeconfig file.
@@ -349,12 +460,12 @@ How does port forwarding work ? what happens in the background after you execute
 4. Pod process this request and sends the response back thriugh the same tunnel to your local machine.
 
 
-Why port forwarding and not LB/NP?
+31. Why port forwarding and not LB/NP?
 ------------------------------------------------
 Port forwarding is a temporary access without exposing your application to outside world.
 
 
-What is Kubernetes probes ?
+32. What is Kubernetes probes ?
 -----------------------------
 Kubernetes probes are health checks that kubernetes uses to monitor the status of application running inside the container.
 Types of Probes:
@@ -364,7 +475,7 @@ Readiness: checks if your application is ready to accept the traffic, if it fail
 Startup: checks if your appliation has started correctly, useful for apps that take long time to start after this one starts.
 
 
-How Kubernetes Probe works?
+33. How Kubernetes Probe works?
 ----------------------------
 kubernetes can check in several ways :
 1. sending HTTP request to specific endpoint.
@@ -372,7 +483,7 @@ kubernetes can check in several ways :
 3. Running a command inside the container
 
 
-What is the difference between Volume and Persistent Volume(PV) and Persistent Volume Claim(PVC)
+34. What is the difference between Volume and Persistent Volume(PV) and Persistent Volume Claim(PVC)
 -------------------------------------------------------------------------------------------------
 Volume: it is directly accessible to containers in pod, used for storing data.
 It is defined at pod level.
@@ -387,7 +498,7 @@ kubernetes finds a suitable PV to match the PVC and bind them together
 Pod then uses PVC to access the storage.
 
 
-Explain the complete process of creating and assigning the PV and PVC to the pod.
+35. Explain the complete process of creating and assigning the PV and PVC to the pod.
 ------------------------------------------------------------------------------------
 1. first create the persistent volume which will be the storage resource 
 -----------------------------------------------------------------------------
@@ -444,22 +555,70 @@ spec:
 The pod mounts the pvc as volume at /var/lib/data so even if the pod gets deleted the stays in the PV and can be reused again by another pod. 
 
 
+36. What is a Deployment in Kubernetes? Write a deployment.yaml for deploying 3 replicas of an Nginx container.
+-----------------------------------------------------------------------------------------------------------------
+> 
 
-MAVEN & GRADLE
-==============
-what is teh difference between maven and gradle tools?
+37. What is a Service in Kubernetes, and what are the types of Services?
+-------------------------------------------------------------------------
+> Service in Kubernetes is an object that provides a stable way to expose and access a group of Pods running your application.
+> Since Pods can be created and destroyed at any time (and their IPs change), a Service gives you a permanent IP address and DNS name to reliably reach your app, and it automatically routes traffic to healthy Pods .
+> Types of service:
+    > ClusterIP: exposes the service on privateIP, can only be accessible within the cluster
+    > NodePort: Exposes teh service on static port and using each NodeIP, it cn be accesible using nodeip:static port that ranges between (30000-32767)
+    > LoadBalancer: Exposes the Service externally using a cloud provider’s load balancer, automatically assigns a public IP and routes external traffic to your Service
+
+38. When would you use each type of Kubernetes Service (ClusterIP, NodePort, LoadBalancer, ExternalName)?
+----------------------------------------------------------------------------------------------------------
+
+39. Explain port, targetPort, and nodePort in a Kubernetes service.
+---------------------------------------------------------------------
+> port: it is the service's port inside the cluster so the requests comes on this port like 80
+> targetPort: it is the port onto which your application is running inside the pod like 8080, so the request comes on 80 and then it gets routed on port 8080
+> nodePort: Port on each node for external access 
+
+40. How would you expose a Kubernetes application externally?
+----------------------------------------------------------------
+
+41. What is Helm, and what are its components (Chart, Repository, Release)?
+--------------------------------------------------------------------------------
+
+
+42. What is the use of Ingress and Ingress Controller in Kubernetes?
+---------------------------------------------------------------------
+
+43. Explain the Kubernetes controllers: Deployment, StatefulSet, ReplicaSet, and DaemonSet.
+---------------------------------------------------------------------------------------------
+
+44. What is the difference between Stateful and Stateless applications? Give examples.
+---------------------------------------------------------------------------------------
+> Stateful: Remembers user data/session between requests (like a chat app or shopping cart).
+> Stateless: Treats every request as new, with no memory of previous actions (like REST APIs or static websites)
+
+45. What are Namespaces in Kubernetes?
+----------------------------------------
+                                                                                                =======================
+====================================================================================================MAVEN & GRADLE==============================================================================================================
+                                                                                                ======================
+
+1. what is teh difference between maven and gradle tools?
+-----------------------------------------------------------
 > maven is used for simpler projects  it uses XML for configurations, (pom.xml)
 > gardle is used for large multi module or highly customized projets, it uses groovy or KOTLIN DSL for configuration. (build.gradle)
 
-what is the dependency section in maven and gradle used for ?
+2. what is the dependency section in maven and gradle used for ?
+----------------------------------------------------------------
 > Yes, both Maven and Gradle have a dependency section, and its purpose is crucial for managing external libraries and packages required by a project.
 
-what is the pom.xml file used for in maven ?
+3. what is the pom.xml file used for in maven ?
+----------------------------------------------
 >
 
 
-SSL/TLS 
-=======
+                                                                                                    ============
+======================================================================================================SSL/TLS=================================================================================================================== 
+                                                                                                    ============
+
 What is ssl/tls mean ?
 > secure socket layer and transport layer security are two cryptographic protocols that secure communication over the internet.
 > They ensure that the data transmitted between the web browser and the server remains private and cannot be intercepted.
@@ -479,35 +638,52 @@ how it is secured?
 > using public and private key crytographic encryption.
 
 
+Explain HTTP, HTTPS, TCP, and UDP with examples.
+-----------------------------------------------------
+15. What are the benefits of using a firewall?
+----------------------------------------------------
 
-MOnitoring
-===========
-what is prometheus ?
+                                                                                                ====================
+=====================================================================================================MONITORING======================================================================================================================
+                                                                                                ====================
+
+1. what is prometheus ?
+-------------------------
 > prometheus is a tool that can be used for collecting the metrics usingg the node exporter agent and stores them and send them to graffana for visulaization. 
 
-how do you configure prometheus ?
+2. How do you configure prometheus ?
+---------------------------------------
 > we instal prometheus using sudo apt-get install prometheus command where we get the prometheus.yaml file 
 > in prometheus.yaml file we configure the target machine ip, job name and scrape interval.
 
-how do you configure metrics in prometheus ?
-
+3. How do you configure metrics in prometheus ?
+-------------------------------------------------
 any query that will be used to monitor the servers?
 http_requests_total{status="500"}
 
-what is grafana?
+4. what is grafana?
+-----------------------
 >
-what all metrics do we need to monitor for a server?
+
+5. what all metrics do we need to monitor for a server?
+---------------------------------------------------------
 > cpu utilization, memory usage,
 
-prometeus and garfana working
+6. prometeus and garfana working
+------------------------------------
 > we install a node exporter agent in the target machines which runs on port 9100
 > we configure the targets ip and scrape intervals in the node exporter config file 
 > node exporter exposes the metrics collected from the target machines
 > later we have a dedicated ec2 for prometheus seerver where in the prometheus.yaml file
 > IN prrometheus.yaml file we create the job name scrape intervals and the target machine from where we need to collect the logs with node exporter port number.
  
+7. Explain the importance of close monitoring, and what types of monitoring do you use?
+------------------------------------------------------------------------------------------
 
 
+                                                                                        =================================
+===============================================================================================PROJECT EXPLANATIONS=============================================================================================================
+                                                                                        ====================================
 
 Project1 TDMS
 ==============
@@ -522,65 +698,18 @@ the application has a load balancer dns which is mapped with the domain name and
 
 
 
+                                                                                                        ==========================
+=========================================================================================================BlueGreen Deployment====================================================================================================
+                                                                                                        =========================
 
-BlueGreen Deployment
-=====================
+How would you reduce downtime during monthly patching activity?
 
+How do you approach client requests to reduce costs?
 
+What compliance standards are you familiar with?
 
-
-===============================================================================================================================
-
-R2
-
-
-
-
+How would you approach migrating 500+ on-premises systems to AWS or Azure?
 ===============================================================================================================================
 
 
-🔹Tell me about yourself?
- 🔹 What kind of clients and projects did you work on?
- 🔹 What is the team size you worked with?
- 🔹 What were your roles and responsibilities?
- 🔹 Explain your branching strategy.
- 🔹 Git rebase vs. merge
- 🔹 What is Terraform taint?
- 🔹 Describe your pipeline.
- 🔹 Describe a DevOps pipeline using YAML.
- 🔹 Describe a desktop project that produces an artifact.
- 🔹 What is your experience with ARM templates and Terraform?
- 🔹 How would you approach migrating 500+ on-premises systems to AWS or Azure?
- 🔹 (Follow-up) How would you approach the same specifically for Azure?
- 🔹 How do you approach client requests to reduce costs?
- 🔹 How does AI/ML relate to your cloud/DevOps experience?
- 🔹 What are the specific considerations for a multi-cloud environment?
- 🔹 Can you describe a scenario where you optimized a DevOps pipeline for a complex application, and what strategies did you use?
- 🔹 How would you reduce downtime during monthly patching activity?
- 🔹 Explain the importance of close monitoring, and what types of monitoring do you use?
- 🔹 Describe a security incident you faced.
- 🔹 What compliance standards are you familiar with?
 
-
-1. What is a Pod in Kubernetes? Create a pod.yaml for a single-container pod running Nginx.
-2. What is a Deployment in Kubernetes? Write a deployment.yaml for deploying 3 replicas of an Nginx container.
-3. What is a Service in Kubernetes, and what are the types of Services?
-4. When would you use each type of Kubernetes Service (ClusterIP, NodePort, LoadBalancer, ExternalName)?
-5. Write a simple Terraform script to provision a virtual machine on AWS.
-6. Explain port, targetPort, and nodePort in a Kubernetes service.
-7. How would you expose a Kubernetes application externally?
-8. What is Helm, and what are its components (Chart, Repository, Release)?
-9. What is the difference between EXPOSE in a Dockerfile and docker run -p?
-10. How do you run Nginx on a Linux server using Docker?
-11. Explain HTTP, HTTPS, TCP, and UDP with examples.
-12. What is a Dockerfile? Write a basic Dockerfile for a Node.js application.
-13. What is a base image in Docker? Which base image would you use for Python or Node.js?
-14. How do you check for open ports on a Linux system?
-15. What are the benefits of using a firewall?
-16. What is the use of Ingress and Ingress Controller in Kubernetes?
-17. Explain the Kubernetes controllers: Deployment, StatefulSet, ReplicaSet, and DaemonSet.
-18. What is the difference between Deployment and ReplicaSet?
-19. What are Kubernetes Probes (Liveness, Readiness, Startup)?
-20. What is the difference between Stateful and Stateless applications? Give examples.
-21. What are Namespaces in Kubernetes?
-22. What is Port Forwarding in Kubernetes?
