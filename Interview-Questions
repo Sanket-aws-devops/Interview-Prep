@@ -105,7 +105,21 @@ what is hosted zone in route53 ?
 > two types of hosted zones public and private
 
 what is geolocation routing?
-> 
+> Geolocation routing policy in Amazon Route 53 allows you to direct DNS traffic to different resources based on the geographic location of your users—the location where their DNS queries originate.
+> You can define geolocation records at different levels:
+Continent
+Country
+State/Province 
+> EX: Suppose you have a web application with servers in both the US and Germany. You want:
+Users in North America to be routed to a US server.
+Users in Europe to be routed to a German server.
+All other users to be routed to a default server
+> You would create Route 53 DNS records like:
+Record 1: For North America (continent), point to the US server.
+Record 2: For Europe (continent), point to the German server.
+Record 3: Default, point to a fallback server for all other locations.
+
+
 how can we manage subdomains independently using Route53 ?
 
 
@@ -172,11 +186,14 @@ What tools or services do you use for backup management in AWS?
 ====================================================================================================VIRTUAL PRIVATE CLOUD (VPC)=================================================================================================
                                                                                                 ===================================
 
-what is subnet what are the types of subnets ?
+1. what is subnet what are the types of subnets ?
+-----------------------------------------------------
 > subnet is nothing but distributing your network in small sub networks.
 > Two types of subnet private and public
 
-Create the complete deployment architecture for a 3 tier application wrt vpc,sub etc.
+2. Create the complete deployment architecture for a 3 tier application wrt vpc,sub etc.
+------------------------------------------------------------------------------------------
+>
 
 3. What is the difference between nat gateway and nat instances? which is more preferable? which one have you used?
 --------------------------------------------------------------------------------------------------------------------
@@ -197,9 +214,23 @@ Steps to create the nat instances
 ===================================================================================================CI/CD (CODE BUILD/DEPLOY/PIPELINE)===========================================================================================
                                                                                                 =========================================
 
-Explain the complete process of CI/CD you configured wrt code build, code deploy and code pipeline .
-Explain about BG deploymnet type ?
-Difference between BG-DEP and Canary deployment?
+1. Explain the complete process of CI/CD you configured wrt code build, code deploy and code pipeline .
+------------------------------------------------------------------------------------------------------
+> we setup the source code in Github and configure Webhooks to trigger the pipeline.
+> we create a code build project where we write a buildspec file which contains the instructions to pull the code, build the project, and zip the artifacts and send them to s3 bucket .
+> we create the deployment application and deployment group where we select our ec2 instances onto which we want to deploy our application.
+> set up a code pipeline select the source stage as github, configure build stage as code build and select deployment group from code deploy as deploy stage.
+> so once the commit happens in the github repository it triggers the code pipeline to start and it builds the project using code build and deploys it on ec2 instance using code deploy.
+> once the server is up and running we test it and route teh traffic to the new updated ec2 from the load balancer.
+
+2. Explain about BG deploymnet type ?
+-----------------------------------
+>
+
+3. Difference between BG-DEP and Canary deployment?
+------------------------------------------------------
+> 
+
 How do you route traffic once the deployment is succesful ?
 Describe your CI/CD pipeline.
 
