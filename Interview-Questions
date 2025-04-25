@@ -338,7 +338,7 @@ kubernetes will terminate all the pods that are running with api-image:3 and sch
     > Finds the best node for the pod based on factors like CPU, memory, affinity rules, and topology constraint.
  
 
-6. expplain the workflow of networking and traffic routing in k8s.
+6. explain the workflow of networking and traffic routing in k8s.
 -----------------------------------------------------------------------
 > when we deploy our application in kubernetes by configuring CNI plugins like calico, weaver, flannel
 > so when the pod gets deployed, kubernetes assigns it a unique IP, this allows the pod to talk to another pod within the same cluster.
@@ -349,9 +349,14 @@ kubernetes will terminate all the pods that are running with api-image:3 and sch
 -----------------------------------------------------------------------------------------------------------
 > 
 
-8. What is rolling upgrade startegy?
+8. What is rolling upgrade strategy?
 ---------------------------------------
->
+> A rolling update in Amazon EKS is a deployment strategy that updates your application by gradually replacing old pods with new ones, instead of stopping everything at once. 
+> This ensures your application stays available and users experience little or no downtime during the update
+  > How it works:
+    EKS starts new pods with the updated version of your application.
+    As the new pods become healthy, EKS slowly removes the old pods.
+    At any time, some old pods and some new pods are running together, so your service remains up
 
 9. If i have two pods in different namespace will they communicate with each other if yes how ?
 ----------------------------------------------------------------------------------------------
@@ -383,11 +388,25 @@ With Calico: You can easily create a rule that only allows the payment service t
 
 13. How will you configure autoscaling in kubernetes? how will hpa gets trigger to scale the pod?
 ---------------------------------------------------------------------------------------------------
->
+> we need to Set Resource Requests/Limits
+    > Define cpu and memory requests and limits in your pod or deployment specs. HPA relies on these metrics to make scaling decisions
+> we have to Deploy Metrics Server
+    > Ensure the Kubernetes Metrics Server is installed and running. It collects resource usage data (like CPU/memory) used by the HPA
+> create an hpa.yaml file 
+    > configure hpa configuration like resource and requets in hpa
+
+> How HPA Gets Triggered to Scale Pods
+Metrics Collection: The Metrics Server collects current resource usage (e.g., CPU, memory) of pods.
+Comparison to Target: The HPA controller compares the actual usage to the target value you set (e.g., 50% CPU).
+Scaling Decision:
+If usage exceeds the target, HPA increases the number of pod replicas.
+If usage falls below the target, HPA decreases the number of pod replicas.
+Continuous Monitoring: This process repeats at regular intervals, ensuring the number of pods matches the current demand
+
 
 14. write a deployment.yaml and hpa.yaml file ?
 -----------------------------------------------------
->
+> 
 
 15. what is statefulsets? / benifit of deploying an application using statefulsets?
 ----------------------------------------------------------------------------------
