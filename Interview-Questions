@@ -759,7 +759,53 @@ How do you approach client requests to reduce costs?
 What compliance standards are you familiar with?
 
 How would you approach migrating 500+ on-premises systems to AWS or Azure?
-===============================================================================================================================
+
+                                                                                        =========================================
+ ============================================================================================Elastic Container Service (ECS)================================================================================================================================
+                                                                                        ==========================================
+
+1. What is AWS fargate?
+>
+2. Walk through configuring a CI/CD pipeline for ECS Fargate using CodePipeline and CodeDeploy.
+> 
+3. How would you secure sensitive data (e.g., database passwords) for Fargate tasks?
+> 
+4. Explain how to set up autoscaling for ECS Fargate services.
+> 
+5. Describe troubleshooting steps for a failing ECS task.
+> 
+6. How would you implement a blue/green deployment for ECS Fargate using CodeDeploy?
+>
+7. How do you ensure high availability in a multi-AZ ECS Fargate setup?
+> 
+8. How would you migrate an existing EC2-based ECS service to Fargate with zero downtime
+>
+9. what is the difference between ECS Containers and Fargate Containers?
+> 
+
+                                                                                        ======================================
+=============================================================================================Simple Storage Service (S3)========================================================================================================
+                                                                                        =======================================
+
+1. Your organization needs to store application logs in a scalable and durable storage service.
+Question: How would you create and configure an S3 bucket for storing logs?
+> Create a new S3 bucket with a unique name.
+Enable versioning to protect against accidental deletions or overwrites.
+Apply a lifecycle policy to transition older logs to a cheaper storage class (e.g., S3 Glacier or S3 Intelligent-Tiering).
+Set up appropriate bucket policies or IAM roles to restrict access to authorized users only.
+
+2. A developer accidentally deleted critical objects in an S3 bucket.
+Question: How can you recover the data?
+> If versioning is enabled, restore the previous versions of the deleted objects.
+If versioning is not enabled, recovery is not possible via S3; you may need to restore from backups if available.
+Enable versioning going forward to prevent permanent data loss.
+
+3. What is S3 Lifecycle Management?
+> Lifecycle management allows you to define rules to automatically transition objects between storage classes or delete them after a specified period, optimizing storage costs.
+These questions and answers span from foundational knowledge to features and best practices, preparing you for a range of S3-related interview scenarios.
+
+4. Storage classes in S3 ?
+> 
 
 
 
