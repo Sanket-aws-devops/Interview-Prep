@@ -61,7 +61,7 @@ Routing policies in ALB
 
 
 
-what happens in the backend when you hit the url in the browser ?explain the complete scenario 
+what happens in the backend when you hit the url in the browser ? explain the complete scenario 
 -------------------------------------------------------------------------------------------------
 > when you type the url, browser splits it into parts eg: https://example.com/products
 protocol: https
@@ -207,7 +207,7 @@ Steps to create the nat instances
 > launch the ec2 from that ami
 > launch this ec2 in public subnet 
 > connect to it and enable IP forwarding
-> disable the source and destination check from teh networking section.
+> disable the source and destination check from the networking section.
 > update the private subnet route tables to point to nat instance.
 
                                                                                                 ========================================
@@ -256,13 +256,13 @@ Bridge:
 Overlay:
 MacVLAN
 
-What is the difference between EXPOSE in a Dockerfile and docker run -p?
+3. What is the difference between EXPOSE in a Dockerfile and docker run -p?
 ---------------------------------------------------------------------------
 > EXPOSE is used to open the port inside teh container so that the application could run on it.
 > -p (publish) it is used so that the application can be accessible from outside the container.
 
 
-What is a Dockerfile? Write a basic Dockerfile for a Node.js application.
+4. What is a Dockerfile? Write a basic Dockerfile for a Node.js application.
 ----------------------------------------------------------------------------
 > A Dockerfile is a text file containing a set of instructions used to build a Docker image for your application. 
 FROM node:18
@@ -274,17 +274,22 @@ EXPOSE 3000
 CMD ["node", "app.js"]
 
 
-What is a base image in Docker? Which base image would you use for Python or Node.js?
+5. What is a base image in Docker? Which base image would you use for Python or Node.js?
 --------------------------------------------------------------------------------------
 > A base image in Docker is the foundational layer of a Docker image from which you build your custom images. 
 > It typically contains the minimal operating system and runtime environment needed to run your application
 > for python we use python:3.9 and for node we can use node:18
 
-How do you manage versioning of Docker images stored in ECR?
+
+6. How do you manage versioning of Docker images stored in ECR?
 -------------------------------------------------------------
 > when pushing the image to ecr we use a consistent tagging process where the image is tagged with specific version like 1.0
 > tagging helps us when we need to rollback to the previous version  
 > we implemented ecr life cycle policies where the older images gets deleted after a certain period
+
+
+7. How do you secure your docker images ?
+> 
 
                                                                                                 ======================        
 =======================================================================================================Kubernetes===============================================================================================================
@@ -748,9 +753,9 @@ the application has a load balancer dns which is mapped with the domain name and
 
 
 
-                                                                                                        ==========================
-=========================================================================================================BlueGreen Deployment====================================================================================================
-                                                                                                        =========================
+                                                                                          ==========================
+=============================================================================================BlueGreen Deployment==============================================================================================================
+                                                                                          =========================
 
 How would you reduce downtime during monthly patching activity?
 
@@ -805,7 +810,25 @@ Enable versioning going forward to prevent permanent data loss.
 These questions and answers span from foundational knowledge to features and best practices, preparing you for a range of S3-related interview scenarios.
 
 4. Storage classes in S3 ?
-> 
+> S3 Standard : 
+it is general purpose used for frequently accessed data.
+Data stored across ≥3 Availability Zones (AZs)
 
+> S3 Standard-IA:
+Automatically moves your data to cheaper storage if it’s not accessed often, but keeps it ready if you need it.
 
+> S3 Standard-IA (Infrequent Access): 
+For data you don’t use often but need quickly when required. 
+Example: Backup files or old reports you might need suddenly
 
+> S3 One Zone-IA: 
+Like Standard-IA, but data is stored in one location (cheaper, but less redundancy). 
+Example: Secondary backups or easily recreated data
+
+> S3 Glacier/Glacier Instant Retrieval: 
+For archiving data you rarely need, but want to access quickly if necessary. 
+Example: Archived medical images or compliance records
+
+> S3 Glacier Deep Archive: 
+For data you almost never need, with the lowest cost but slow retrieval (hours). 
+Example: Long-term legal records or old backups
