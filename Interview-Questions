@@ -182,6 +182,23 @@ What tools or services do you use for backup management in AWS?
 > we take Amazon Machine Images (AMIs) of those instances every 7 days.
 
 
+How do you handle database migrations in a live environment?
+-------------------------------------------------------------
+> so there are two ways of doing that:
+1. create the backup of the database and reatore it into the other database.
+Ex: we have a database in QA env and we have added some tables in it and now want the same database to be in PROD as well .
+so we can take the backup of our QA database and restore it in the PROD database using the below commands.
+mysqldump -h [RDS-endpoint] -u [username] -p [database_name] > backup.sql
+mysql -h [dev-db-endpoint] -u [username] -p [database_name] < backup.sql
+
+2. Another approach is configuring the Flyway in your source code which is done by the developers.
+Ex: Flyway is a database migration tool that manages and versions your database changes using migration scripts.
+Developers write a new migration script (for example, to add a new table) and save it in the designated Flyway migration folder with a proper version number, such as V2__add_new_table.sql.
+They push this code, including the migration script, to GitHub.
+When you deploy this updated code and restart your server, Flyway automatically checks which migration scripts have not yet been run on the database.
+Flyway then applies the new migration scripts in order, updating the database schema (for example, creating the new table) to match the latest changes.
+
+
                                                                                                 ====================================
 ====================================================================================================VIRTUAL PRIVATE CLOUD (VPC)=================================================================================================
                                                                                                 ===================================
@@ -290,6 +307,29 @@ CMD ["node", "app.js"]
 
 7. How do you secure your docker images ?
 > 
+
+8. Write a dockerfile to deploy the java application, avoid running it as root user (create a test user and run it as test user)
+
+FROM openjdk:17-jdk-alpine
+
+# Create a non-root user and group
+RUN addgroup -S appgroup && adduser -S testuser -G appgroup
+
+# Create application directory and set permissions
+RUN mkdir /app && chown testuser:appgroup /app
+
+# Set working directory
+WORKDIR /app
+
+# Copy application files and set ownership
+COPY --chown=testuser:appgroup . /app
+
+# Switch to non-root user
+USER testuser
+
+# Run the Java application
+CMD ["java", "-jar", "your-app.jar"]
+
 
                                                                                                 ======================        
 =======================================================================================================Kubernetes===============================================================================================================
@@ -652,6 +692,16 @@ The pod mounts the pvc as volume at /var/lib/data so even if the pod gets delete
 
 45. What are Namespaces in Kubernetes?
 ----------------------------------------
+
+46. Security Features in Kubernetes
+-----------------------------------
+> Kubernetes security features include RBAC, network policies, secrets management, API server protections, pod security controls, and resource limits-all designed to keep your cluster and workloads safe.
+Example
+If you deploy a sensitive application, you can:
+Use RBAC to ensure only specific users can manage it.
+Apply network policies so only certain pods can communicate with it.
+Store its database password as a Kubernetes Secret, encrypted at rest.
+Set resource limits so a bug in the app can't crash the whole cluster.
                                                                                                 =======================
 ====================================================================================================MAVEN & GRADLE==============================================================================================================
                                                                                                 ======================
@@ -734,6 +784,28 @@ http_requests_total{status="500"}
  
 7. Explain the importance of close monitoring, and what types of monitoring do you use?
 ------------------------------------------------------------------------------------------
+>
+
+8. What is Proactive Monitoring Vs Reactive Monitoring
+-------------------------------------------------------
+> Proactive monitoring means watching your systems all the time to spot and fix problems before they affect users.
+EX: Your website monitoring tool alerts you that server response times are getting slower than usual. You fix the issue before customers notice any slowdown.
+
+> Reactive monitoring means waiting until something goes wrong, then fixing it after you notice the problem.
+Ex: Your website goes down, and you only find out when customers start complaining. You then rush to fix the problem after it has already happened
+
+9. what is meant by incident management and how do you approach it as an SRE?
+> Incident management in SRE is the process of quickly finding, fixing, and learning from problems that disrupt normal service, like outages or major slowdowns. 
+> The main goal is to restore service fast and prevent the same issue from happening again.
+Approach as an SRE:
+--------------------
+Detect the problem usingg monitoring tools and alerts .
+keep the backup ready.
+apply the qucik sollutions and get the server up and running
+work on the issue.
+
+
+
 
 
                                                                                         =================================
@@ -832,3 +904,21 @@ Example: Archived medical images or compliance records
 > S3 Glacier Deep Archive: 
 For data you almost never need, with the lowest cost but slow retrieval (hours). 
 Example: Long-term legal records or old backups
+
+                                                                              =====================================================
+========================================================================================INCIDENT RESPONSE AND TROUBLESHOOTING====================================================================================================
+                                                                              ======================================================
+1.  You discover that a recent config change was deployed without proper testing. The system is unstable. How do you respond.
+> rollback to previous stable version immediately
+check the logs and identify the issue 
+fix the issue and redeploy the code 
+
+2. Your service is intermittently returning 403 errors to authenticated users. How do you debug and resolve this?
+> 
+3. A rollback didn’t resolve a production issue. What’s your next step?
+> check the logs and try to find out the possible cause .
+meanwhile run your application on the most stabe version of code 
+
+4.  Your app needs to support zero-downtime deployments, but users experience brief disruptions. How do you fix that?
+> use deployment startegies like BG deployment 
+> ensure proper load balancing configuration before to drain connections before shutting down the instances.
