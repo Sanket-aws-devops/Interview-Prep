@@ -36,7 +36,7 @@ what is ALB ?why do we use it ?
 ALB vs NLB ?
 -------------
 > ALB stands for application load balancer it supports path based routing it operates on osi layer 7 (Application layer) and it is best for HTTP/HTTPS traffic
-> NLB stands for Network Load balancer it does not supports path based routing, it routes traffic based on ip address and port numbers, it is used for TCP/UDP traffic where you need high performance and low latency.
+> NLB stands for Network Load balancer it does not supports path based routing, it routes traffic based on ip address and port numbers, it operates on layer 4(Transport layer) and is used for TCP/UDP traffic where you need high performance and low latency.
 
 
 How do you configure ALB ?
@@ -242,13 +242,17 @@ Steps to create the nat instances
 
 2. Explain about BG deploymnet type ?
 -----------------------------------
->
+> IN BG deployment type we maintain two environments Blue and Green, where green contains the current running stable version of your code.
+> so when we deploy the second revision it gets deployed on the blue environment without affecting or disturbing the stable version.
+> once the new code is deployed and tested succesfully then the traffic is routed from green to blue environment from load balancer.
+> By establishing this deployment strategy we can reduce the downtime and easily rollback to the previous versions if teh deployment fails without facing downtime.
 
 3. Difference between BG-DEP and Canary deployment?
 ------------------------------------------------------
 > 
 
-How do you route traffic once the deployment is succesful ?
+4. How do you route traffic once the deployment is succesful ?
+> 
 Describe your CI/CD pipeline.
 
                                                                                                     ===========
@@ -311,22 +315,16 @@ CMD ["node", "app.js"]
 8. Write a dockerfile to deploy the java application, avoid running it as root user (create a test user and run it as test user)
 
 FROM openjdk:17-jdk-alpine
-
 # Create a non-root user and group
 RUN addgroup -S appgroup && adduser -S testuser -G appgroup
-
 # Create application directory and set permissions
 RUN mkdir /app && chown testuser:appgroup /app
-
 # Set working directory
 WORKDIR /app
-
 # Copy application files and set ownership
 COPY --chown=testuser:appgroup . /app
-
 # Switch to non-root user
 USER testuser
-
 # Run the Java application
 CMD ["java", "-jar", "your-app.jar"]
 
