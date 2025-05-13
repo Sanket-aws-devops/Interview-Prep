@@ -334,6 +334,11 @@ USER testuser
 # Run the Java application
 CMD ["java", "-jar", "your-app.jar"]
 
+9. Difference between CMD and ENTRYPOINT ?
+--------------------------------------------
+CMD : command given in the cmd can be easily overridden while running the docker container 
+ENTEYPOINT: command given in the entrypoint cannot be overriden while running the docker container except only when you specify the --entrypoint flag   
+
 
                                                                                                 ======================        
 =======================================================================================================Kubernetes===============================================================================================================
