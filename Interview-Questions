@@ -253,6 +253,16 @@ Steps to create the nat instances
 > once the new code is deployed and tested succesfully then the traffic is routed from green to blue environment from load balancer.
 > By establishing this deployment strategy we can reduce the downtime and easily rollback to the previous versions if teh deployment fails without facing downtime.
 
+3. How do you optimize your build time in code build?
+---------------------------------------------------------
+> Use Build Caching: Store and reuse files or dependencies that don’t change often, so you don’t have to rebuild or re-download them every time.
+Example: Cache your node_modules or Maven dependencies between builds, so only new or changed packages are installed in each build.
+> Run Only Necessary Steps: Skip tests, builds, or deployments for files or services that haven’t changed.
+Example: If only frontend files changed, skip backend build steps.
+> Minimize I/O Operations: Reduce the number of times your build reads from or writes to storage, as these operations are usually slow.
+
+4. If you are trying to deploy the application on code 
+
 3. Difference between BG-DEP and Canary deployment?
 ------------------------------------------------------
 > 
@@ -711,6 +721,27 @@ Use RBAC to ensure only specific users can manage it.
 Apply network policies so only certain pods can communicate with it.
 Store its database password as a Kubernetes Secret, encrypted at rest.
 Set resource limits so a bug in the app can't crash the whole cluster.
+
+46. What is meant by CRI, CSI, CNI in Kubernetes? Explain with an example.
+> CRI stands for Container Runtime Interface, it is a plugin that enable Kubernetes to interact with underlying container runtimes.
+it is a software that actually runs containers, like containerd or CRI-O).
+CRI defines how Kubernetes talks to the container runtime engine (like containerd, CRI-O, Docker).
+Without CRI kubelet cannot run the containers.
+EX: If your Kubernetes cluster uses containerd on one node and CRI-O on another, 
+Kubernetes uses CRI to communicate with both, without needing to know their internal details.
+
+> CSI stands for Container Storage Interface, it is an interface for conecting storage system to kubernetes.
+It lets Kubernetes use different storage backends (like AWS EBS, Google Persistent Disk, or on-prem SANs) through plugins, making storage management flexible and consistent.
+Without CSI you cannot provision the storage 
+EX: When a pod needs persistent storage, Kubernetes uses a CSI plugin (like AWS EBS CSI driver) to provision and attach a disk to the pod, regardless of the underlying storage technology.
+
+> CNI stands for Container Networking Interface, it is a  interface for configuring networking for containers and pods.
+Without CNI pods wont get networking.
+It allows Kubernetes to use different networking plugins (like Flannel, Calico, or Weave) to give pods their own IP addresses and enable communication between them.
+EX: When a new pod is created, Kubernetes calls a CNI plugin (like Calico) to assign an IP address and set up networking, so the pod can talk to other pods and the outside world
+
+
+
                                                                                                 =======================
 ====================================================================================================MAVEN & GRADLE==============================================================================================================
                                                                                                 ======================
