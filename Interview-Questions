@@ -349,6 +349,21 @@ CMD ["java", "-jar", "your-app.jar"]
 CMD : command given in the cmd can be easily overridden while running the docker container 
 ENTEYPOINT: command given in the entrypoint cannot be overriden while running the docker container except only when you specify the --entrypoint flag   
 
+10. what is docker.sock file ? what is it used for ?
+------------------------------------------------------
+The docker.sock file, typically located at /var/run/docker.sock.
+It is a Unix socket file that serves as the main communication channel between Docker clients (like the Docker CLI) and the Docker daemon (dockerd).
+it’s a special file that lets Docker tools talk to the Docker engine to manage containers, images, and more.
+Example:
+when you run "docker ps" command the docker CLI sends a request through docker.sock to docker daemon, which process the command and return the list of running containers.
+
+
+11. what is the default port for docker daemon?
+-------------------------------------------------
+The default port for the Docker daemon when configured for remote access is:
+2375 for unencrypted (plain TCP) connections.
+2376 for encrypted (TLS/HTTPS) connections.
+
 
                                                                                                 ======================        
 =======================================================================================================Kubernetes===============================================================================================================
@@ -738,7 +753,11 @@ EX: When a pod needs persistent storage, Kubernetes uses a CSI plugin (like AWS 
 > CNI stands for Container Networking Interface, it is a  interface for configuring networking for containers and pods.
 Without CNI pods wont get networking.
 It allows Kubernetes to use different networking plugins (like Flannel, Calico, or Weave) to give pods their own IP addresses and enable communication between them.
-EX: When a new pod is created, Kubernetes calls a CNI plugin (like Calico) to assign an IP address and set up networking, so the pod can talk to other pods and the outside world
+EX: When a new pod is created, Kubernetes calls a CNI plugin (like Calico) to assign an IP address and set up networking, so the pod can talk to other pods and the outside world.
+
+47. what is the default port for kubernetes api server ?
+The default port for the Kubernetes API server is 6443. This is the port the API server listens on by default for secure (HTTPS) communication. 
+In production environments, it is common to expose the API server through a load balancer on port 443, but the default and most typical direct port is 6443.
 
 
 
