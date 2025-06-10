@@ -152,13 +152,30 @@ What do you know about RDS backups?
 > Retention can be increased and by default it's 7 days
 
 
-
 what is point in time recovery?
 --------------------------------
 > Point-in-Time Recovery (PITR) in Amazon RDS allows you to restore a database to a specific moment in time, down to the exact second, within the retention period of your automated backups.
 > When you enable automated backups in RDS, daily snapshots of your database are taken. In addition, transaction logs are continuously recorded and stored.
 
 
+Explain the disaster management and recovery for the database in RDS?
+-------------------------------------------------------------------------
+1. Multi-AZ Deployments
+2. Automated Backups & Point-in-Time Recovery
+3. Manual Snapshots
+4. Read Replicas (including cross-region)
+
+> I focus on minimizing downtime and data loss by using Multi-AZ deployments for high availability, automated backups for point-in-time recovery, and manual snapshots for long-term and cross-region protection. 
+> For critical workloads, I also use cross-region read replicas, which can be promoted if the primary region fails.
+> I also use cross-region read replicas, which can be promoted if the primary region fails. I define RTO and RPO targets based on business needs and regularly test recovery procedures to ensure readiness. 
+> This layered approach ensures both high availability and disaster recovery, tailored to the application's criticality and compliance needs.
+
+
+what is RTO & RPO wrt Disaster Recovery and Management?
+---------------------------------------------------------
+> RTO (Recovery Time Objective) and RPO (Recovery Point Objective) are two key terms in disaster recovery.
+> RTO is about how fast you need to recover.
+> RPO is about how much data you can afford to lose.
 
 
 Explain RDS Multi Availability Zone / How does you manage failover in RDS 
@@ -203,6 +220,7 @@ Developers write a new migration script (for example, to add a new table) and sa
 They push this code, including the migration script, to GitHub.
 When you deploy this updated code and restart your server, Flyway automatically checks which migration scripts have not yet been run on the database.
 Flyway then applies the new migration scripts in order, updating the database schema (for example, creating the new table) to match the latest changes.
+
 
 
                                                                                  ====================================
