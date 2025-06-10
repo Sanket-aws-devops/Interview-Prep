@@ -102,6 +102,50 @@ EX: accessing secure website like https://abc.com
 
 
 
+                                                                            =========================
+====================================================================================LINUX========================================================================================
+                                                                            =========================
+
+1. What is patching in linux?
+------------------------------
+
+2. Why is patching important in linux?
+--------------------------------------
+
+3. common ways to apply patches in linux?
+------------------------------------------
+
+4. what is the difference between a security patch and kernel patch?
+---------------------------------------------------------------------
+
+5. How do you check the current version of a package before patching
+----------------------------------------------------------------------
+
+6. How do you update all packages on linux system
+--------------------------------------------------
+
+7. How do you rollback a patch if something goes wrong?
+--------------------------------------------------------
+
+8. How do you apply a kernel patch in linux
+---------------------------------------------
+
+9. what is live patching
+-------------------------
+
+10. linux command to find a directory ?
+---------------------------------------
+> find / -type d -name "directory-name"
+
+11. linux command to find a file in linux system ?
+---------------------------------------------------
+> find / type -f -name "file name"
+
+
+
+
+
+
                                                                                             ===================
 ================================================================================================ROUTE53========================================================================================================================
                                                                                             ===================
