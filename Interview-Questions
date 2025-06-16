@@ -97,12 +97,45 @@ EX: accessing secure website like https://abc.com
 
 
                                                                               ========================
-===================================================================================Github-Actions================================================================================================
+===================================================================================Jenkins================================================================================================
                                                                               ========================
+1. How would you design a Jenkins pipeline to deploy an application across multiple environments (dev, test, prod) with approval gates between stages?
 
+2. Explain how you would implement parallel execution in a Jenkins pipeline and aggregate the results.
 
+3. Describe the process of managing multiple Git branches, each with its own Jenkins pipeline. How do you ensure consistency and maintainability?
 
-                                                                            =========================
+4. How would you optimize a Jenkins pipeline that frequently downloads dependencies, leading to increased build times and bandwidth usage?
+
+5. How do you securely integrate Jenkins with external services (like cloud providers or third-party APIs) and manage credentials?
+
+6. Describe how to trigger a Jenkins job from an external source, such as a webhook or REST API.
+
+7. How would you implement automated security vulnerability scanning as part of your Jenkins CI/CD process?
+
+8. What steps would you take if a Jenkins build is stuck in the queue or running slowly?
+
+9. How would you handle a situation where multiple developers commit code simultaneously, causing merge conflicts in Jenkins?
+
+10. Describe your approach to troubleshooting and recovering from transient build failures or intermittent issues in Jenkins pipelines.
+
+11. How do you analyze and optimize Jenkins for large-scale DevOps environments with many jobs and users?
+
+12. How would you design Jenkins for high availability and disaster recovery?
+
+13. What are the best practices for Jenkins credential management and securing sensitive data?
+
+14. How do you implement compliance controls and audit logging for Jenkins pipelines to meet regulatory requirements?
+
+15. How do you address and remediate security vulnerabilities within Jenkins and its plugins?
+
+16. Describe how you would implement a Blue/Green deployment strategy using Jenkins pipelines.
+
+17. How do you configure Jenkins to send real-time notifications and alerts for build status changes or failures?
+
+18. How would you automate end-to-end deployment from code check-in to production using Jenkins and infrastructure-as-code tools
+
+                                                                         =========================
 ====================================================================================LINUX========================================================================================
                                                                             =========================
 
