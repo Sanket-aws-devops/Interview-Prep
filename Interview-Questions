@@ -153,26 +153,79 @@ Add more agents or increase executors as needed.
 
 9. How would you handle a situation where multiple developers commit code simultaneously, causing merge conflicts in Jenkins?
 ------------------------------------------------------------------------------------------------------------------------------
-> 
+> Use Jenkins pipelines to automatically merge branches before building. 
+If a merge conflict occurs, Jenkins will fail the build and notify the team.
+Ex: Configure the pipeline to check out the feature branch, attempt to merge with the main branch, and fail if conflicts arise. 
+Developers are then notified to resolve conflicts manually before retrying the build.
+
 10. Describe your approach to troubleshooting and recovering from transient build failures or intermittent issues in Jenkins pipelines.
+----------------------------------------------------------------------------------------------------------------------------------------
+> Check Jenkins logs and console output for errors.
+Identify if failures are due to network, environment, or external dependencies.
+Re-run failed builds, possibly after cleaning the workspace or updating dependencies.
+Ex: If a test fails due to a temporary network issue, rerun the build after verifying connectivity.
 
 11. How do you analyze and optimize Jenkins for large-scale DevOps environments with many jobs and users?
+-------------------------------------------------------------------------------------------------------------
+> Use master-agent architecture to distribute jobs.
+Remove unused plugins, shard large jobs, and clean old builds.
+Parallelize jobs and use cloud-based or Docker agents.
+Ex: Split a monolithic build into smaller parallel jobs and use cloud agents to scale on demand.
 
 12. How would you design Jenkins for high availability and disaster recovery?
+------------------------------------------------------------------------------
+> Deploy Jenkins on multiple nodes with load balancing.
+Use shared storage (e.g., NFS, AWS EFS) for Jenkins home.
+Enable automated backups and auto-scaling for failover.
+Ex: Use AWS Auto Scaling and Elastic IP to recover from EC2 or data center failures, keeping Jenkins available.
 
 13. What are the best practices for Jenkins credential management and securing sensitive data?
+-----------------------------------------------------------------------------------------------
+> Store secrets in Jenkins’ built-in credentials store.
+Avoid hardcoding secrets in scripts or environment variables.
+Rotate credentials regularly and audit usage.
+Example: Use the Credentials Binding plugin to inject secrets into pipelines securely.
 
 14. How do you implement compliance controls and audit logging for Jenkins pipelines to meet regulatory requirements?
+-----------------------------------------------------------------------------------------------------------------------
+> Enable verbose build logs and archive them.
+Use Audit Trail and Job Configuration History plugins.
+Store Jenkinsfiles in version control and enforce role-based access.
+Example: Track all changes to jobs and pipeline scripts for audit purposes, and restrict editing permissions.
 
 15. How do you address and remediate security vulnerabilities within Jenkins and its plugins?
+-----------------------------------------------------------------------------------------------
+> Regularly update Jenkins core and plugins.
+Subscribe to Jenkins security advisories.
+Remove or replace vulnerable plugins and apply available patches.
+Example: If a plugin vulnerability is announced, update or disable the plugin immediately and follow any published workarounds.
 
 16. Describe how you would implement a Blue/Green deployment strategy using Jenkins pipelines.
+------------------------------------------------------------------------------------------------
+> Deploy new version to a "green" environment.
+Run tests, then switch traffic from "blue" (old) to "green" (new) using a load balancer.
+Roll back to "blue" if issues are detected.
+Example: Use Jenkins to build, test, and deploy to green, then update the load balancer to point to green after successful validation.
 
 17. How do you configure Jenkins to send real-time notifications and alerts for build status changes or failures?
+------------------------------------------------------------------------------------------------------------------
+> Use notification plugins (e.g., Slack, Email).
+Configure post-build actions to send alerts on status changes.
+Example: Send a Slack message to the dev team when a build fails or passes.
 
 18. How would you automate end-to-end deployment from code check-in to production using Jenkins and infrastructure-as-code tools
+----------------------------------------------------------------------------------------------------------------------------------
+> Use Jenkins pipelines to trigger builds on code check-in.
+Integrate with tools like Terraform or Ansible for infrastructure provisioning.
+Automate application deployment and testing.
+Example: Jenkins pipeline triggers on Git push, provisions infrastructure with Terraform, deploys app, and runs tests automatically.
 
 19. How can I optimize Jenkins distributed builds for large-scale projects
+----------------------------------------------------------------------------
+> Use multiple agent nodes tailored for different tasks.
+Parallelize builds and tests.
+Monitor node health and resource utilization.
+Example: Assign heavy integration tests to dedicated nodes, run unit tests in parallel on other nodes, and use labels to optimize job distribution.
 
 20. How would you implement automated security vulnerability scanning in Jenkins pipelines?
 -------------------------------------------------------------------------------------------------
@@ -223,10 +276,7 @@ Example: Monitor the queue and provision additional cloud agents if jobs are wai
 Switch traffic using scripts or tools after validation.
 Example: Deploy to the blue environment, run tests, then update the load balancer to route traffic to blue if tests pass.
 
-29. How do you handle transient build failures in pipelines?
----------------------------------------------------------------
-> Implement retry logic in the pipeline for flaky steps and notify on repeated failures.
-Example: Use the retry block for unstable integration tests, and alert the team if the step fails after retries
+
 
 
 
@@ -236,36 +286,81 @@ Example: Use the retry block for unstable integration tests, and alert the team 
 
 1. What is patching in linux?
 ------------------------------
+> Patching in Linux means updating your system or software with small pieces of code called "patches" to fix security issues, bugs, or add new features.
+It is done to fix any security vulnerabilities, add new features, code issues, resolve bugs and prevent system crashes.
+Patching in linux system involves following steps:
+- check for updates 
+- download patches
+- apply patches 
+- verify 
+EX: patching a package in linux
+sudo apt-get update -y
+
+EX: patching afile using patch command
+diff -u oldfile.txt newfile.txt > changes.patch
+patch oldfile.txt < changes.patch
+Now old file will have the contents from newfile.
+
 
 2. Why is patching important in linux?
 --------------------------------------
+> patching keeps your system proetected from the security vulnerabilities or any critical claw that cannot be exploited.
 
 3. common ways to apply patches in linux?
 ------------------------------------------
+> it can be done using either package managers like apt or yum depending upon your system
+sudo apt-get update -y # fetch and install security and feature patches for installed packages.
+Using the patch Command (for Source Code or File Patching).
+- apply a patch file created with diff to update the source code or configuration
+patch -p1 < changes.patch
+- to revert the patch 
+patch -R -p1 < changes.patch
+
 
 4. what is the difference between a security patch and kernel patch?
 ---------------------------------------------------------------------
+> security patch refers to the vulnerabilities that can be exploited by the attackers.
+These can be related to any user applications or libraries or the kernal itself.
+> Kernel patch refers any update applied to linux kernal.
+It includes bug fixes, performance improvements, new features or security fixes.
+
 
 5. How do you check the current version of a package before patching
 ----------------------------------------------------------------------
+> to check the curret version of any package we execute the below commands
+- apt list <package-name>
+- dpkg -l | grep <package-name>
+To check the detailed information
+- apt show <package name>
+To compare installed and available versions
+- apt-cache policy <package-name>
 
 6. How do you update all packages on linux system
 --------------------------------------------------
 
 7. How do you rollback a patch if something goes wrong?
 --------------------------------------------------------
+> we can use package manager 
+- sudo dnf history undo <transaction-id>
+> we can downgrade the package
+- sudo dnf downgrade <package-name>-<old-version>
+> using patch command
+- patch -R < original.patch
 
-8. How do you apply a kernel patch in linux
----------------------------------------------
-
-9. what is live patching
+8. what is live patching
 -------------------------
+> live patching is a way of applying critical updates to teh linux kernal without rebooting the system.
+This means you can fix vulnerabilities or bugs and keep your system secure and stable, with no downtime.
+- command to enable live patching in ubuntu 
+sudo snap install canonical-livepatch
+sudo canonical-livepatch enable <TOKEN>
 
-10. linux command to find a directory ?
+
+9. linux command to find a directory ?
 ---------------------------------------
 > find / -type d -name "directory-name"
 
-11. linux command to find a file in linux system ?
+10. linux command to find a file in linux system ?
 ---------------------------------------------------
 > find / type -f -name "file name"
 
@@ -458,8 +553,134 @@ Example: If only frontend files changed, skip backend build steps.
 > 
 
 4. How do you route traffic once the deployment is succesful ?
+----------------------------------------------------------------
 > 
-Describe your CI/CD pipeline.
+
+5. Describe a scenario where a build failed due to a dependency issue. How did you identify and resolve the problem?
+---------------------------------------------------------------------------------------------------------------------
+> We had a Node.js app where the build started failing due to a transitive dependency update. 
+I checked the error logs and noticed a missing peer dependency. 
+I fixed it by locking the dependency versions using package-lock.json and also enabled caching in CodeBuild to avoid pulling broken versions."
+
+6. How would you optimize build times in CodeBuild for a large monorepo project?
+---------------------------------------------------------------------------------
+> "In a large monorepo, we optimized CodeBuild by using build matrices and conditional builds. 
+We added logic in the buildspec to only build services that had changes, and we cached dependencies with S3 and local storage."
+Ex: We used git diff to detect changes and trigger builds only for the affected modules, which reduced build times from 20 to 6 minutes
+
+7. Suppose your build artifacts are not being uploaded to S3 as expected. Walk me through your troubleshooting process.
+------------------------------------------------------------------------------------------------------------------------
+> First, I check the build logs to confirm if the artifact paths are correct. 
+Then I review the artifacts section in buildspec.yml and IAM permissions to ensure CodeBuild has S3 write access."
+Ex: Once, the path in buildspec.yml had a typo (output/ vs outputs/).
+Correcting the path and confirming the role permissions fixed the issue
+
+8. How do you ensure that sensitive environment variables are not exposed in build logs?
+------------------------------------------------------------------------------------------
+I securely pass sensitive credentials in CodeBuild by storing a .env file in an encrypted S3 bucket with restricted access. 
+During the build phase, I download and source it without printing any sensitive data. 
+Alternatively, I’ve also created .env files dynamically by fetching parameters from AWS Parameter Store.
+
+9. Imagine a deployment to production failed halfway, leaving some instances updated and others not. How would you recover and ensure consistency?
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+> I first identify which instances failed by checking CodeDeploy deployment logs and instance statuses. 
+Then I stop the deployment, fix the root cause, and re-deploy to the failed instances using CodeDeploy’s 'Continue deployment' or re-deploy option."
+Ex:
+Once, a config file was missing on some instances. 
+I fixed the AppSpec script to include it, re-deployed only to the failed targets, and verified consistency with health checks.
+
+10. How would you implement a blue/green deployment with CodeDeploy to minimize downtime and risk?
+---------------------------------------------------------------------------------------------------
+> I set up two Auto Scaling groups — one for blue (current) and one for green (new). 
+In CodeDeploy, I use the 'blue/green' deployment type with EC2, where CodeDeploy shifts traffic from blue to green after success criteria are met."
+Ex:
+"In one project, I used blue/green deployment for an EC2 service, configured CodeDeploy to shift traffic gradually, and added health checks to ensure zero downtime.
+
+11. Describe a time when you had to roll back a deployment. What steps did you take and what tools did you use?
+----------------------------------------------------------------------------------------------------------------
+> When a deployment caused issues, I used CodeDeploy’s automatic rollback feature based on failed health checks. 
+I also kept a previous stable version in S3, so manual rollback was quick if needed."
+Ex:
+"A new release caused 500 errors in production. 
+I triggered a rollback from the CodeDeploy console and redeployed the last known good version stored in S3."
+
+12. How do you handle application health checks and automatic rollback in CodeDeploy?
+---------------------------------------------------------------------------------------
+> I configure application health checks in the AppSpec file or through ELB. 
+I also enable CodeDeploy's auto rollback on deployment failure or unhealthy hosts to prevent bad releases from staying active."
+Ex:
+"I set up ELB health checks for an EC2 deployment.
+When the app failed to respond on 200 OK, CodeDeploy triggered an auto rollback, minimizing downtime
+
+13. How would you design a pipeline that supports multiple environments (dev, staging, prod) with approval gates between each stage?
+---------------------------------------------------------------------------------------------------------------------------------------
+> I design the pipeline with separate stages for dev, staging, and prod. 
+Each stage has its own CodeDeploy or CloudFormation deployment action. 
+I use manual approval actions in CodePipeline between staging and prod to enforce checks and allow release managers or leads to approve."
+Ex:
+"In one project, we had a 4-stage pipeline: build, deploy to dev, deploy to staging, and deploy to prod. 
+We added a manual approval after staging, where QA could validate the app before promoting to production.
+
+14. Describe a situation where a pipeline execution was blocked due to a failed manual approval or test stage. How did you resolve it?
+---------------------------------------------------------------------------------------------------------------------------------------
+> If a pipeline was blocked due to a failed test or missed approval, I reviewed the CodePipeline execution history to find the failed stage. 
+For test failures, I fixed the issue in code or config and pushed a new commit to re-trigger the pipeline. 
+For manual approvals, I followed up with the approver or reassigned the approval step."
+
+Ex:
+"Our staging tests once failed due to a version mismatch in the test environment. 
+I updated the test container image and committed the fix. 
+The pipeline then passed and proceeded after the manual gate was approved.
+
+15. Suppose you need to trigger a pipeline only when code is merged to a specific branch. How would you configure this?
+-----------------------------------------------------------------------------------------------------------------------
+> I configure the source stage in CodePipeline (e.g., using CodeCommit, GitHub, or Bitbucket) to monitor a specific branch like main or release. 
+I use webhook-based triggers and specify the branch name to avoid triggering builds for every push."
+Ex:
+"In one setup, we only triggered deployments when code was merged to the main branch. 
+We used GitHub webhooks with a branch filter in CodePipeline to make sure only finalized changes started a pipeline run
+
+16. How do you integrate security scanning and automated tests into your CodePipeline workflow?
+--------------------------------------------------------------------------------------------
+> I integrate automated tests in the build phase using tools like Jest, PyTest, or Maven. 
+For security scanning, I add tools like Snyk, Trivy, or AWS Inspector as a separate stage or as part of the buildspec. 
+If vulnerabilities are found, the build fails and blocks deployment."
+Ex:
+"In a containerized app, we used Trivy during the build stage to scan Docker images. 
+If high-severity CVEs were found, the pipeline failed before even reaching staging, which helped us catch issues early.
+
+17. Give an example of how you automated end-to-end deployment from code commit to production using CodePipeline, CodeBuild, and CodeDeploy. What challenges did you face and how did you overcome them?
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> I automated a complete CI/CD pipeline using CodePipeline. The process started with a GitHub commit, which triggered CodeBuild to run tests and build artifacts. 
+Then, CodeDeploy deployed the app to EC2 instances in staging and production environments. 
+I added approval gates and health checks at each stage."
+
+Challenges & Solution:
+"One challenge was deployment failures due to incorrect AppSpec file paths. 
+I fixed it by adding validations in the build stage and tested deployments in staging first before going to production."
+Example:
+"In a Node.js app, I used CodeBuild to build and package the app, pushed it to S3, and deployed using CodeDeploy to an EC2 Auto Scaling group, all automated through CodePipeline.
+
+18. Describe a real incident where your pipeline failed in production. How did you identify the root cause and what measures did you take to prevent recurrence.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+> We once had a production pipeline fail because the build artifact was missing a required environment config file. 
+The application crashed right after deployment."
+How I Resolved It:
+I checked the CloudWatch logs and CodeDeploy lifecycle events. 
+The failure happened during the ApplicationStart hook. 
+I patched the missing config, added pre-deploy validation in CodeBuild, and added a staging smoke test stage to catch such issues earlier.
+
+19. Explain how you would implement canary deployments using AWS DevOps tools. What metrics would you monitor and how would you automate rollback
+----------------------------------------------------------------------------------------------------------------------------------------------------
+> I use CodeDeploy with canary deployment configuration, where only a small percentage (e.g., 10%) of traffic is routed to the new version initially. 
+If health checks pass, traffic is shifted to 100% automatically."
+Metrics & Rollback:
+"I monitor application-level metrics in CloudWatch like HTTP 5xx errors, latency, and custom app health checks. 
+If any threshold is breached, CodeDeploy automatically rolls back to the previous version."
+Example:
+"We deployed a new feature to 10% of instances using a canary setup. 
+One of the health checks failed due to a bad config, and CodeDeploy rolled it back automatically, minimizing impact.
+
 
                                                                                          ===========
 ===========================================================================================DOCKER====================================================================================================================
@@ -683,8 +904,6 @@ Continuous Monitoring: This process repeats at regular intervals, ensuring the n
 Persistent Storage: Data remains even if pods restart or terminate, thanks to Persistent Volume Claims (PVCs).
 Stable Network Identity: Each pod has a consistent hostname, which helps in communication between pods, this hostname will not change even if the pod restarts
 In stateful sets each pod gets its own PVC via Volume claim Templates.
-
-
 
 
 16. What is daemon-set? when do we use it ?
