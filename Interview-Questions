@@ -364,7 +364,34 @@ sudo canonical-livepatch enable <TOKEN>
 ---------------------------------------------------
 > find / type -f -name "file name"
 
-
+11. What is PM2 and how do you use it in Node.js deployments?
+>
+12. How do you kill a process using PM2?
+>
+13. How do you check running nodes?
+>
+14. How do you kill a process in Linux?
+>
+15. How to get the process ID (PID)?
+>
+16. How to check system performance in Linux?
+>
+17. What does chmod 555 mean?
+>
+18. How do you give full permissions to a file or folder?
+>
+19. Difference between a soft link and a hard link?
+>
+20. How do you open the firewall in Linux?
+>
+21. How to check which ports are running or open?
+>
+22. What does netstat -ntlp do and how to use it?
+>
+23. What is a cron job?
+>
+24. How do you clear cache in Linux?
+>
 
 
 
@@ -1315,7 +1342,16 @@ keep the backup ready.
 apply the qucik sollutions and get the server up and running
 work on the issue.
 
-
+10. How do you configure Grafana dashboards?
+>
+11. What is Node Exporter?
+>
+12. How do you trigger email alerts from Grafana?
+>
+13. What kind of alert conditions do you usually configure?
+>
+14. What kind of Grafana dashboards are typically used in a DevOps environment?
+> 
 
 
 
@@ -1433,3 +1469,15 @@ meanwhile run your application on the most stabe version of code
 4.  Your app needs to support zero-downtime deployments, but users experience brief disruptions. How do you fix that?
 > use deployment startegies like BG deployment 
 > ensure proper load balancing configuration before to drain connections before shutting down the instances.
+
+===========================================================================================================================================================================
+
+
+ • What’s your Ansible experience in real projects?
+ • How do you manage sensitive data like passwords in Ansible?
+ • How do you securely run playbooks that use secrets?
+
+
+
+
+
