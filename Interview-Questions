@@ -1196,7 +1196,8 @@ The default port for the Kubernetes API server is 6443. This is the port the API
 In production environments, it is common to expose the API server through a load balancer on port 443, but the default and most typical direct port is 6443.
 
 
-
+48. How do you handle authentication for EKS clusters and store secrets securely in your environment?
+>
 
 
 1. How does DNS work in a pod? What if service name resolution fails?
