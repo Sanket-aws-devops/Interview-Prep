@@ -803,6 +803,17 @@ The default port for the Docker daemon when configured for remote access is:
 2376 for encrypted (TLS/HTTPS) connections.
 
 
+                                                                                  ============================
+=========================================================================================Terraform=============================================================================
+                                                                                  =============================
+
+1. what is tfvars file in teraform?
+2. what is terraform lifecycle ?
+3. what will happen if you change the name of terraform.tfvars file to dev.tfvars file ?
+4. Is it possible to change the name of terraform.tfvars file ?
+5. what is the difference between var.tf and tf.vars ?
+
+
                                                                                                 ======================        
 =======================================================================================================Kubernetes===============================================================================================================
                                                                                                 =======================
