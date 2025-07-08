@@ -812,6 +812,9 @@ The default port for the Docker daemon when configured for remote access is:
 3. what will happen if you change the name of terraform.tfvars file to dev.tfvars file ?
 4. Is it possible to change the name of terraform.tfvars file ?
 5. what is the difference between var.tf and tf.vars ?
+6. How do you setup multi region infrastructure using terraform.
+7. what is module in terraform and why do we use it ?
+
 
 
                                                                                                 ======================        
