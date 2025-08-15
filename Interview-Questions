@@ -735,6 +735,10 @@ MacVLAN
 ---------------------------------------------------------------------------
 > EXPOSE is used to open the port inside teh container so that the application could run on it.
 > -p (publish) it is used so that the application can be accessible from outside the container.
+> If you write EXPOSE 8080 in your Dockerfile, it’s just a note saying, “Hey, my app uses port 8080 inside the container.”
+> But this does not make the app visible outside the container.
+> If you want to use your app from your computer (outside the container), you must start your container with -p 8080:8080.
+> Without the -p option, your app runs inside the container, but you can’t reach it from your computer or browser.
 
 
 4. What is a Dockerfile? Write a basic Dockerfile for a Node.js application.
@@ -861,7 +865,7 @@ kubernetes will terminate all the pods that are running with api-image:3 and sch
 5. what is the difference between kube controller and kube schedular ?
 -------------------------------------------------------------------
 > kube controller
-    > controller makes sure taht the cluster current state matches the desired state by continously monitoring the resources.
+    > controller makes sure that the cluster current state matches the desired state by continously monitoring the resources.
     > example:  if a Deployment specifies 5 replicas but only 3 pods are running, the controller will create 2 more pods
     > If a pod crashes or is deleted unexpectedly, the controller detects this and recreates the pod to match the desired state.
 > Kube schedular:
@@ -1188,6 +1192,7 @@ Store its database password as a Kubernetes Secret, encrypted at rest.
 Set resource limits so a bug in the app can't crash the whole cluster.
 
 46. What is meant by CRI, CSI, CNI in Kubernetes? Explain with an example.
+-------------------------------------------------------------------------------
 > CRI stands for Container Runtime Interface, it is a plugin that enable Kubernetes to interact with underlying container runtimes.
 it is a software that actually runs containers, like containerd or CRI-O).
 CRI defines how Kubernetes talks to the container runtime engine (like containerd, CRI-O, Docker).
@@ -1206,6 +1211,7 @@ It allows Kubernetes to use different networking plugins (like Flannel, Calico, 
 EX: When a new pod is created, Kubernetes calls a CNI plugin (like Calico) to assign an IP address and set up networking, so the pod can talk to other pods and the outside world.
 
 47. what is the default port for kubernetes api server ?
+-----------------------------------------------------------
 The default port for the Kubernetes API server is 6443. This is the port the API server listens on by default for secure (HTTPS) communication. 
 In production environments, it is common to expose the API server through a load balancer on port 443, but the default and most typical direct port is 6443.
 
@@ -1214,7 +1220,8 @@ In production environments, it is common to expose the API server through a load
 >
 
 
-1. How does DNS work in a pod? What if service name resolution fails?
+49. How does DNS work in a pod? What if service name resolution fails?
+------------------------------------------------------------------------
  Kubernetes uses CoreDNS (via /etc/resolv.conf) to resolve names like my-svc.my-namespace.svc.cluster.local.
  🧠 Troubleshoot with:
 dig / nslookup inside the pod
@@ -1272,6 +1279,13 @@ Karpenter: ✅ dynamic nodes | ❌ not for fixed infra needs
 ----------------------------------------------
 >
 
+4. is it possible to build gradle projects without installing gradle? if yes how ? if not why?
+------------------------------------------------------------------------------------------------
+>
+
+5. what is the difference between gradle build and gradlew clean build ?
+--------------------------------------------------------------------------
+>
 
                                                                                                     ============
 ======================================================================================================SSL/TLS=================================================================================================================== 
