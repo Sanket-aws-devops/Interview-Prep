@@ -481,6 +481,7 @@ Explain RDS Multi Availability Zone / How does you manage failover in RDS
 
 
 How IAM authentication works with RDS? / Secure way to connect to rds database other than username or passwords ?
+------------------------------------------------------------------------------------------------------------------
 > Enable IAM Authentication on RDS:
     Ensure that IAM authentication is enabled on your RDS instance (MySQL, PostgreSQL, etc.) during the database setup.
 > Grant IAM Permissions:
@@ -577,21 +578,47 @@ Example: If only frontend files changed, skip backend build steps.
 
 3. Difference between BG-DEP and Canary deployment?
 ------------------------------------------------------
-> 
+Blue Green
+-----------
+> How it works: You have two separate, but identical environments—Blue (old/live) and Green (new/release candidate).
+> When you release a new version, you deploy it entirely to the idle environment (e.g., Green).
+> After testing the new version, you switch all user traffic at once from the current (Blue) to the new environment (Green), usually with a load balancer.
+> Rollback is easy: If something fails, just route traffic back to Blue.
+> Speed: The changeover is quick—all users are switched at the same time.
+Example:
+Your website is running on the Blue environment. You build a new version and deploy it to Green. 
+After confirming everything works, you point the load balancer to Green—instantly, all users use the new version.
+
+Canary
+-------
+> In canary deployments there are typically two versions of your code running at the same time in two different instances, not just one instance or one environment.
+> Both the old (stable) version and the new (canary) version are active simultaneously.
+> Traffic is split: a small percentage of users are routed to the new version and the rest continue to use the old version.
+> You can set this up on different instances, pods, containers, or even as separate services in the same environment, depending on your infrastructure.
+> If the new version performs well and no major issues appear, you keep increasing its share—until it’s live for everyone.
+> Rollback: If a bug appears, only a small group is affected, making risks small and easy to control.
+Example:
+Suppose you have 10 containers behind a load balancer:
+At first, 9 containers run the old version, 1 runs the new canary.
+10% of your users see the new code, 90% see the old.
+If everything looks good, you gradually update more containers to the new version.
 
 4. How do you route traffic once the deployment is succesful ?
 ----------------------------------------------------------------
-> 
+> In Blue-Green (BG) deployment, once the new version is deployed to the idle environment and tested successfully, the load balancer switches 100% of the traffic from the old (green) environment to the new (blue) environment. 
+> This is typically done by changing the target group or backend server pool associated with the load balancer to point exclusively to the new instances.
+> For Canary deployments, the load balancer distributes traffic gradually between the old and the new versions according to weights you specify. 
+For example, you might start by routing 10% of traffic to the new instances and 90% to the old. Over time, if the new version performs well, you increase the traffic weight toward the new version until it fully replaces the old one.
 
 5. Describe a scenario where a build failed due to a dependency issue. How did you identify and resolve the problem?
 ---------------------------------------------------------------------------------------------------------------------
-> We had a Node.js app where the build started failing due to a transitive dependency update. 
+> We had a Node.js app where the build started failing due to a transitive (dependecy of the dependency) dependency update. 
 I checked the error logs and noticed a missing peer dependency. 
 I fixed it by locking the dependency versions using package-lock.json and also enabled caching in CodeBuild to avoid pulling broken versions."
 
 6. How would you optimize build times in CodeBuild for a large monorepo project?
 ---------------------------------------------------------------------------------
-> "In a large monorepo, we optimized CodeBuild by using build matrices and conditional builds. 
+> "In a large monorepo, we optimized CodeBuild by using build metrices and conditional builds. 
 We added logic in the buildspec to only build services that had changes, and we cached dependencies with S3 and local storage."
 Ex: We used git diff to detect changes and trigger builds only for the affected modules, which reduced build times from 20 to 6 minutes
 
@@ -633,11 +660,13 @@ I triggered a rollback from the CodeDeploy console and redeployed the last known
 
 12. How do you handle application health checks and automatic rollback in CodeDeploy?
 ---------------------------------------------------------------------------------------
-> I configure application health checks in the AppSpec file or through ELB. 
-I also enable CodeDeploy's auto rollback on deployment failure or unhealthy hosts to prevent bad releases from staying active."
-Ex:
-"I set up ELB health checks for an EC2 deployment.
-When the app failed to respond on 200 OK, CodeDeploy triggered an auto rollback, minimizing downtime
+> In AWS CodeDeploy, I configure application health checks either through the AppSpec file or by integrating with an Elastic Load Balancer (ELB). 
+> The ELB continuously monitors the health of the instances by sending periodic requests. 
+> If an instance fails to respond with a healthy status (for example, HTTP 200 OK), it is marked as unhealthy.
+> To ensure stability and prevent bad deployments, I enable CodeDeploy’s automatic rollback feature. 
+> This tells CodeDeploy to automatically rollback the deployment if:
+    > The deployment fails on any instance.
+    > The application instances fail ELB health checks during or shortly after the deployment.
 
 13. How would you design a pipeline that supports multiple environments (dev, staging, prod) with approval gates between each stage?
 ---------------------------------------------------------------------------------------------------------------------------------------
@@ -1418,14 +1447,23 @@ How would you approach migrating 500+ on-premises systems to AWS or Azure?
                                                                                         ==========================================
 
 1. What is AWS fargate?
->
+> AWS Fargate is a serverless compute engine by Amazon Web Services (AWS) that lets you run containerized applications without having to manage the underlying servers or infrastructure. 
+Instead of worrying about managing or scaling physical or virtual servers, you just define how much CPU and memory your container needs, and Fargate automatically provisions and runs the right amount of resources for you
+
 2. Walk through configuring a CI/CD pipeline for ECS Fargate using CodePipeline and CodeDeploy.
 > 
 3. How would you secure sensitive data (e.g., database passwords) for Fargate tasks?
 > 
 4. Explain how to set up autoscaling for ECS Fargate services.
-> 
+-------------------------------------------------------------------
+>  When you create or update your ECS Fargate service, turn on the option to configure service autoscaling.
+> Set Minimum, Desired, and Maximum Task Counts: Define the minimum number of tasks to always run, the desired number to start with, and the maximum number of tasks that can scale up to handle more load.
+> Create Autoscaling Policies: Set rules that tell AWS when to increase or decrease the number of running tasks. For example, scale out (add more tasks) if CPU usage goes above a certain threshold and scale in (reduce tasks) if CPU usage goes below another threshold.
+> Use CloudWatch Metrics: AWS CloudWatch monitors your application’s workload (like CPU or memory usage) and triggers the autoscaling actions based on the policies you set.
+> Assign IAM Role: Use an IAM role (such as ecsAutoscaleRole) which has the permissions needed to allow autoscaling to adjust your tasks.
+
 5. Describe troubleshooting steps for a failing ECS task.
+----------------------------------------------------------
 > 
 6. How would you implement a blue/green deployment for ECS Fargate using CodeDeploy?
 >
