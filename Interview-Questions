@@ -841,12 +841,72 @@ The default port for the Docker daemon when configured for remote access is:
                                                                                   =============================
 
 1. what is tfvars file in teraform?
+> is a simple file used to provide values for input variables in your Terraform configuration. 
+> It helps you separate the variable values from your main code, making it easier to manage and reuse settings for different environments.
+
 2. what is terraform lifecycle ?
+> create, update, destroy
+
 3. what will happen if you change the name of terraform.tfvars file to dev.tfvars file ?
+> If you rename the terraform.tfvars file to dev.tfvars, Terraform will NOT load it automatically when you run commands like terraform plan or terraform apply. 
+> By default, Terraform automatically loads only the file named exactly terraform.tfvars.
+>  If you want to use dev.tfvars, you must specify it manually with the -var-file option, like this:
+> terraform plan -var-file="dev.tfvars"
+
+
 4. Is it possible to change the name of terraform.tfvars file ?
+> Yes, it is possible to change the name of the terraform.tfvars file. You can use any filename with the .tfvars extension, but you must tell Terraform to use it by adding the -var-file flag to your command
+
+
 5. what is the difference between var.tf and tf.vars ?
+> var.tf Declares the variable
+> tf.vars gives values to those variables
+
 6. How do you setup multi region infrastructure using terraform.
+> Define multiple provider blocks: create a provider block for each region you want to deploy to.
+> use the alias in resources: 
+
 7. what is module in terraform and why do we use it ?
+>
+
+8. what is a state file in terraform ?
+> state file in terraform keeps record of your actual infrastructure resources that terraform manages.
+> it is usually named as terraform.tfstate and stores the details like resource id's, attributes, and dependencies.
+> it tracks the real world resources you create with terraform and link them with your configuration files.
+
+9. what happens if you delete the state file ?
+-----------------------------------------------
+> if you delete the state file terraform will lose all the knowledge about the infrastructure it previously managed, terraform will think no resource exist.
+> if you run terraform apply after deleting the state file it will try to recreate all the resources from scratch which can lead to duplicacy and conflicts,
+moreover you will no longer be able to manage update or destroy the existing infrastructure through terraform because teh connection between the infra and the statefile is lost.
+
+10. How do you secure the terraform state file?
+-----------------------------------------------
+> terraform state file can be secured by storing them in remote backends with proper access controls and encryption, like AWS S3 with server side encryption and access control policies .
+
+11. how are the secrets managed in terraform? explain the process of how do you fetch them in terraform
+----------------------------------------------------------------------------------------------------------------
+> secrets like env variables are stored in AWS Secret manager and terraform uses datasources to fetch the secret values and decode them for use in resources
+> so if you have some secrets configured in AWS secret manager tehn you create a datasource which will refer to the existing secret in AWS Secret manager.
+> then you create another datasource to fetch the actual secret value stored in the secret.
+> In third step you use jsondecode () to decode the secrets json formatted value so that you can access specific info inside it .
+
+12. what happens if two users unknowingly execute terrafom apply command simultaneously?
+-----------------------------------------------------------------------------------------
+> it will cause a conflict because terraform tries to modify the same resource at once.
+> but if you are using remote backend with state locking enabled then terraform will lock the state when one apply starts, preventing the other from running until the first finishes.
+> if locking is not enabled then both operations could run concurrently and will cause 409 conflict error or corrupt the state file .
+
+13. what is remote backend ?
+----------------------------
+> it is a way of storing your state file in a centralized location like AWS S3.
+> Multiple people can access and update teh file .
+> It supports state locking to prevent two people from making changes at the same time, avoiding conflicts.
+
+14.  what is terraform lock file and why is it used?
+------------------------------------------------------
+> terraform lock file is used to lock the exact versions of your providers your terraform configuration uses.
+> it is created by executing terraform init command and managed by terraform.
 
 
 
