@@ -566,7 +566,7 @@ Steps to create the nat instances
 > once the new code is deployed and tested succesfully then the traffic is routed from green to blue environment from load balancer.
 > By establishing this deployment strategy we can reduce the downtime and easily rollback to the previous versions if teh deployment fails without facing downtime.
 
-3. How do you optimize your build time in code build?
+3. ffvffgvgfvfc
 ---------------------------------------------------------
 > Use Build Caching: Store and reuse files or dependencies that don’t change often, so you don’t have to rebuild or re-download them every time.
 Example: Cache your node_modules or Maven dependencies between builds, so only new or changed packages are installed in each build.
@@ -755,8 +755,9 @@ CMD["java","-jar","server.jar"]
 2. Network types in docker 
 --------------------------
 > There are 4 network types in Docker 
-Host:
-Bridge:
+Host: it ues the host machine network and can be accessed outside without any port mapping.
+Bridge: it is default network for docker, whn you deploy the containers in bridge network it creates its own network and the container gets deployed in that network and they can communicate wioth each other using PIP.
+they can be accessed outside the network using port mapping like -p 8080:80 (container runnning on port80 can be accessed outside on port 8080)
 Overlay:
 MacVLAN
 
